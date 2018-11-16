@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>业务量统计</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.1.0/echarts.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="./common/styles/main.css" />
+</head>
+<body>
+<div id="app">
+    <div class="top">
+        业务量统计
+    </div>
+    <div class="contentBox">
+        <div class="content">
+            <div class="tools">
+                <div class="flex">
+                    <p>时间</p>
+                    <el-select class="inputItem" placeholder="请选择时间"></el-select>
+                    <p>渠道</p>
+                    <el-select class="inputItem" placeholder="请选择渠道"></el-select>
+                </div>
+                <div>
+
+                </div>
+            </div>
+            <div class="chartBox">
+                <div id="pieBox">
+
+                </div>
+                <div id="lineBox">
+
+                </div>
+            </div>
+            <div class="showBox">
+                <div class="form">
+                    <table class="gtable">
+                        <tr class="gheader">
+                            <th>渠道名称</th>
+                            <th>请求来源</th>
+                            <th>接收时间</th>
+                            <th>回复时间</th>
+                            <th>接收内容</th>
+                            <th>回复内容</th>
+                            <th>推荐</th>
+                            <th>是否有用</th>
+                            <th>是否人工咨询</th>
+                        </tr>
+                        <tr v-for="i in 5">
+                            <td>微信</td>
+                            <td>-</td>
+                            <td>2018-03-12 09:12</td>
+                            <td>2018-03-12 09:12</td>
+                            <td>说实话</td>
+                            <td >？？？</td>
+                            <td >-</td>
+                            <td >否</td>
+                            <td >否</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<style>
+
+    .chartBox{
+        display: flex;
+        height: 25rem;
+        width: 100%;
+        align-items: center;
+        padding: 1rem;
+
+    }
+    .chartBox #pieBox{
+        width: 30rem;
+        height: 100%;
+    }
+    .chartBox #lineBox{
+        flex: 1;
+        height: 100%;
+    }
+
+</style>
+<script src="./transPerson/transPerson.js"></script>
+</html>

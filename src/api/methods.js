@@ -11,6 +11,10 @@ export default {
   post: (url,data)=>{
     return request.post(url,data)
   },
+  postNew:(url,data)=>{
+    let reqData = Qs.stringify(data);
+    return request.post(url,data)
+  },
   postForm: (url,data)=>{
     let reqData = Qs.stringify(data);
     return request.post(url,reqData,{headers:{'Content-Type':'application/x-www-form-urlencoded'}})

@@ -1,9 +1,14 @@
 import http from './methods'
 
-let url = '/api/user'
 
 export default {
-  getUser: (data)=>{
-    return http.get(url,data)
-  }
+  login:(data)=>{
+    return http.postForm('/api/authentication/login',data)
+  },
+  logout: ()=>{
+    return http.get('/api/authentication/logout')
+  },
+  register: (data)=>{
+    return http.postForm('/api/authentication/register',data)
+  },
 }

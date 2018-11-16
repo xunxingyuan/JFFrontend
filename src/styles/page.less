@@ -1,0 +1,1171 @@
+@import "common";
+
+//登录注册通用
+.loginContain{
+  width: 100%;
+  height: 100%;
+  background: @gray;
+  .loginBox{
+    width: 340px;
+    height: 360px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 2px 2px 10px 0 #BFD1EA;
+    z-index: 10;
+    flex-flow: column;
+    padding: 20px 60px;
+    justify-content: center;
+    position: relative;
+    .registerTips{
+      font-size: 0.9rem;
+      color: #999;
+      margin-top: 0;
+      cursor: pointer;
+    }
+    .registerTips:hover{
+      color: @blue;
+    }
+    .logo{
+      position: absolute;
+      top: -40px;
+      width: 80px;
+      height: 80px;
+      left: 50%;
+      margin-left: -40px;
+      background: #fff;
+      box-shadow: 2px 2px 4px #e2e2e2;
+      border-radius: 40px;
+      img{
+        width: 48px;
+        height: 61px;
+      }
+    }
+    .title{
+      font-size: 20px;
+      color: #333;
+      margin: 2rem 0;
+    }
+    .btn{
+      height: 2rem;
+      width: 100%;
+      cursor: pointer;
+      margin: 2rem 0;
+      background: @blue;
+      color: #fff;
+      line-height: 2rem;
+    }
+    .inputItem{
+      height: 3rem;
+      margin-bottom: 0.5rem;
+      .inputBox{
+        position: relative;
+        font-size: 14px;
+        input{
+          width: 100%;
+          border: solid 1px #ddd;
+          border-radius: 2px;
+          height: 2rem;
+          padding-left: 60px;
+          outline: none;
+        }
+        input:focus{
+          border: solid 1px @blue;
+        }
+        .inputTitle{
+          position: absolute;
+          width: 60px;
+          height: 2rem;
+          line-height: 2rem;
+          left: 0;
+          top: 0;
+          color: #999;
+        }
+      }
+      .tips{
+        display: none;
+        width: 100%;
+        text-align: left;
+        font-size: 12px;
+        color: @red;
+      }
+    }
+    .error{
+      .inputBox{
+        input{
+          border: solid 1px @red;
+        }
+      }
+      .tips{
+        display: block;
+      }
+    }
+  }
+  .bg{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 240px;
+    background: url("../assets/img/login_bg.jpg");
+    background-size: 100% 100%;
+  }
+}
+
+//通用表格
+.gtable{
+  width: 100%;
+  border-collapse: collapse;
+  tr{
+    th{
+      color: #666;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    td{
+      color: #333;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    th,td{
+      text-align: left;
+      height: 3rem;
+      border-bottom: solid 1px #ddd;
+      padding-left: 1rem;
+    }
+    .ctrl{
+      color: #666;
+      .edit,.ctrl,.copy{
+        color: @blue;
+      }
+      .edit:hover{
+        color: @red;
+      }
+      .del,.edit{
+        margin-left: 1rem;
+      }
+      .del:hover{
+        color: @red;
+      }
+      .copy:hover{
+        color: orange;
+      }
+    }
+  }
+  tr:hover{
+    background: #f5f7fa;
+  }
+}
+
+//通用居中弹出层
+.coverBack{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 100;
+  right: 0;
+  top: 0;
+  //居中布局
+  .centerBox{
+    width: 30rem;
+    height: 35rem;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    border-radius: 2px;
+    overflow: hidden;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: space-between;
+    .title{
+      height: 3rem;
+      background: #f3f3f3;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+      display: flex;
+    }
+    .content{
+      flex: 1;
+      display: flex;
+      flex-flow: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 1rem 4rem;
+      .addItem{
+        display: flex;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 1rem;
+        p{
+          font-size: 0.9rem;
+          color: #333;
+          min-width: 6rem;
+        }
+        .itemInput{
+          flex: 1;
+        }
+      }
+    }
+    .btnGroup{
+      height: 4rem;
+    }
+
+    .boxHeader{
+      width: 100%;
+      height: 3rem;
+      min-height: 3rem;
+      padding: 0 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      span{
+        font-weight: 600;
+      }
+    }
+    .boxContent{
+      flex: 1;
+      width: 100%;
+      padding: 0 1rem 1rem 1rem;
+      font-size: 0.9rem;
+      color: #333;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    .boxSetting{
+      width: 100%;
+      padding: 0 1rem;
+      min-height: 5rem;
+      height: 5rem;
+      font-size: 0.9rem;
+      color: #333;
+      p{
+        text-align: left;
+      }
+      .cancel,.submit{
+        width: 100px;
+        height: 32px;
+        display: inline-block;
+        line-height: 32px;
+        border-radius: 3px;
+        margin-left: 1rem;
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+      .cancel{
+        border: solid 1px #ddd;
+        color: #666;
+        background: #f9f9f9;
+      }
+      .submit{
+        background: #2B86F6;
+        color: #fff;
+      }
+      .cancel:hover{
+        color: #333;
+        border: solid 1px #999;
+      }
+      .submit:hover{
+        background: #00bfff;
+      }
+    }
+  }
+
+}
+
+
+//通用容器
+.container{
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  background: @bg;
+  .top{
+    height: 3rem;
+    min-height: 3rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    position: relative;
+    .title{
+      font-size: 1.2rem;
+      color: #000;
+    }
+    .topTools{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      span{
+        color: #666;
+        margin-left: 1rem;
+        cursor: pointer;
+        position: relative;
+        height: 100%;
+      }
+      .active{
+        color: @blue;
+      }
+      .active:before{
+        content: '';
+        width: 50%;
+        height: 2px;
+        background: @blue;
+        position: absolute;
+        bottom: 0;
+        left: 25%;
+      }
+    }
+  }
+  .bottom{
+    flex: 1;
+    overflow: hidden;
+    .content{
+      height: 100%;
+      overflow: auto;
+      overflow-x: hidden;
+      padding: 0 1rem;
+      .tools{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        p{
+          color: #666;
+          margin-right: 1rem;
+          font-size: 14px;
+        }
+        .inputItem{
+          margin-right: 2rem;
+        }
+        input{
+          background: #f5f5f5;
+        }
+      }
+    }
+  }
+}
+
+//通用框架
+.container{
+  .bottom{
+    .content{
+      .innerLeft{
+        width: 19rem;
+        height: 100%;
+        border-right: solid 1px #ddd;
+        border-left: solid 1px #ddd;
+        border-bottom: solid 1px #ddd;
+        display: flex;
+        flex-flow: column;
+        background: #fff;
+
+        .innerTitle{
+          height: 3rem;
+          background: #F8F8F8;
+          border-top: solid 1px #ddd;
+          border-bottom: solid 1px #ddd;
+          justify-content: space-between;
+          padding: 0 1rem;
+          font-size: 14px;
+          color: #333;
+          .ctrl{
+            i{
+              margin-left: 1rem;
+              color: #333;
+            }
+          }
+        }
+        .innerContent{
+          flex: 1;
+          font-size: 14px;
+          .treeBox{
+            padding-left: 1rem;
+          }
+        }
+      }
+      .innerRight{
+        flex: 1;
+        background: #fff;
+        border: solid 1px #ddd;
+        border-left: none;
+        display: flex;
+        flex-flow: column;
+        padding: 1rem;
+        overflow: auto;
+
+        .rightTop{
+          min-height: 2rem;
+          display: flex;
+          align-items: center;
+        }
+        .rightBottom{
+          flex: 1;
+          position: relative;
+          .rightContent{
+            height: 100%;
+            position: relative;
+            padding-bottom: 3rem;
+            .release{
+              color: @blue;
+              margin-right: 1rem;
+            }
+            .edit{
+              color: @blue;
+              margin-right: 1rem;
+            }
+            .del{
+              color: #666;
+            }
+
+            .pageBox{
+              position: absolute;
+              right: 0;
+              bottom: 0;
+              height: 2rem;
+              display: flex;
+              align-items: center;
+            }
+            .tips{
+              margin-top: 3rem;
+              color: #666;
+              font-size: 14px;
+            }
+          }
+          .aimlContain{
+            display: flex;
+            flex-wrap: wrap;
+            padding-top: 1rem;
+            .aimltips{
+              margin-top: 1rem;
+              font-size: 14px;
+              color: #666;
+            }
+            .aimlBox{
+              width: 9rem;
+              height: 8rem;
+              display: flex;
+              flex-flow: column;
+              align-items: center;
+              justify-content: center;
+              position: relative;
+              border-radius: 2px;
+              cursor: pointer;
+              .release{
+                position: absolute;
+                left: 30px;
+                top: 12px;
+                color: @blue;
+                display: none;
+                font-size: 12px;
+              }
+              .del{
+                position: absolute;
+                left: 10px;
+                top: 10px;
+                color: @red;
+                display: none;
+              }
+              .icon{
+                width: 2rem;
+                height: 2rem;
+                line-height: 2rem;
+                border: solid 2px @blue;
+                margin-bottom: 1rem;
+                font-size: 12px;
+                color: @blue;
+                border-top-right-radius: 8px;
+              }
+              span{
+                font-size: 14px;
+                color: #333;
+              }
+            }
+            .aimlBox:hover{
+              background: #eef5fe;
+              .del{
+                display: block;
+              }
+              .release{
+                display: block;
+              }
+            }
+          }
+        }
+        .aimlEditor{
+          .ace-twilight{
+            .ace_print-margin{
+              border: none;
+            }
+          }
+        }
+      }
+      .aimlBox{
+        padding-bottom: 0;
+      }
+    }
+  }
+}
+
+//场景节点样式
+.nodeBox {
+  font-size: 0.8rem;
+  color: #666;
+  .nodeContain {
+    //padding-bottom: 0.6rem;
+    .lineBox {
+      width: 1rem;
+      height: 3.6rem;
+      display: flex;
+      align-items: center;
+      position: relative;
+      .midLine {
+        height: 1px;
+        background: #ddd;
+        width: 100%;
+      }
+      .leftTopLine,.leftBotLine,.leftMidLine,.rightTopLine{
+        position: absolute;
+      }
+      .rightTopLine{
+        height: 1.8rem;
+        width: 2px;
+        right: -2px;
+        top: -1px;
+        background: #ffffff;
+        z-index: 11;
+      }
+      .resize{
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        right: -8px;
+        z-index: 20;
+        width: 16px;
+        margin-top: -1px;
+        color: #ddd;
+        i{
+          margin-top: 2px;
+        }
+      }
+      .arrow{
+        width: 0;
+        height: 0;
+        border: solid 0.3rem #fff;
+        border-left-color: #ddd;
+        position: absolute;
+        right: -0.3rem;
+        top: 1.5rem;
+      }
+    }
+    .nodeBlock {
+      z-index: 2;
+      height: 3.6rem;
+      width: 9rem;
+      border: solid 1px #ddd;
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+      margin-bottom: 0.6rem;
+      .topContain{
+        font-weight: 600;
+      }
+      .topContain,.midContain{
+        margin: 0 0.5rem;
+      }
+      .topContain, .midContain, .botContain {
+        height: 1.2rem;
+        line-height: 1.2rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: left;
+        user-select: none;
+      }
+      .midContain{
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        i{
+          min-width: 16px;
+        }
+        span{
+          height: 1.2rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+      .botContain{
+        width: 100%;
+        padding: 0 0.5rem;
+        display: flex;
+        justify-content: flex-end;
+        i{
+          margin-left: 6px;
+          display: none;
+        }
+      }
+    }
+    .nodeBlock:hover{
+      .botContain{
+        i{
+          display: block;
+        }
+      }
+    }
+    .scenes{
+      border-color: #2b86f6;
+      .topContain{
+        color: #2b86f6;
+      }
+    }
+    .scenes:hover{
+      border: solid 1px #2b86f6;
+      box-shadow: 0 0 10px #2b86f6;
+    }
+    .condition{
+      border-color: #ffb129;
+      .topContain{
+        color: #ffb129;
+      }
+    }
+    .condition:hover{
+      border: solid 1px #ffb129;
+      box-shadow: 0 0 10px #ffb129;
+    }
+    .answer{
+      border-color: #17baa9;
+      .topContain{
+        color: #17baa9;
+      }
+    }
+    .answer:hover{
+      border: solid 1px #17baa9;
+      box-shadow: 0 0 10px #17baa9;
+    }
+    .reply{
+      border-color: #2b86f6;
+      .topContain{
+        color: #2b86f6;
+      }
+    }
+    .reply:hover{
+      border: solid 1px #2b86f6;
+      box-shadow: 0 0 10px #2b86f6;
+    }
+    .active{
+      border: solid 1px #FF0000;
+      box-shadow: 0 0 10px #FF0000;
+    }
+    .active:hover{
+      border: solid 1px #FF0000;
+      box-shadow: 0 0 10px #FF0000;
+    }
+  }
+}
+
+//问题编辑框
+.questionEditBox{
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  cursor: auto;
+  .box{
+    background: #fff;
+    height: 100%;
+    width: 35rem;
+    min-width: 35rem;
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    //overflow: auto;
+    //overflow-x: hidden;
+    .close{
+      position: absolute;
+      top: 10px;
+      left: -20px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .title{
+      font-size: 1rem;
+      color: #333;
+      height: 3rem;
+      min-height: 3rem;
+      padding: 1rem 20px;
+      text-align: left;
+    }
+    .inputBox{
+      flex: 1;
+      font-size: 0.9rem;
+      padding:  0 1rem 1rem 1rem;
+      text-align: left;
+      display: block;
+      //flex-flow: column;
+      overflow-y: auto;
+      .inputTitle{
+        font-weight: 600;
+        margin: 1rem 0;
+        display: flex;
+        flex-wrap: wrap;
+        span{
+          margin-left: 1rem;
+          cursor: pointer;
+          color: #666;
+        }
+        .active{
+          color: #2B86F6;
+        }
+      }
+      .inputBoxItem{
+        margin: 0.5rem 0;
+        //height: 2rem;
+        //min-height: 2.5rem;
+        //max-height: 10rem;
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+        .inputItem{
+          flex: 1;
+          display: flex;
+          align-items: center;
+          .inputMsg{
+            width: 6.5rem;
+            min-width: 6.5rem;
+            line-height: 1.5;
+            font-size: 0.9rem;
+            display: block;
+            //align-self: flex-start;
+            color: #666;
+          }
+          .el-input{
+            flex: 1;
+          }
+        }
+        .del{
+          width: 3rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          span{
+            border: solid 1px #ddd;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ddd;
+            cursor: pointer;
+          }
+          span:hover{
+            color: #2B86F6;
+            border: solid 1px #2B86F6;
+          }
+        }
+      }
+    }
+    .btnBox{
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: #ECF1F7;
+      .testBtn{
+        height: 2rem;
+        position: absolute;
+        left: 1rem;
+        top: 0.5rem;
+        border: solid 1px #2B86F6;
+        width: 6rem;
+        font-size: 0.9rem;
+        color: #2B86F6;
+        line-height: 2rem;
+      }
+      .btnGroup{
+        font-size: 0.9rem;
+        display: flex;
+        span{
+          height: 2rem;
+          width: 6rem;
+          line-height: 2rem;
+        }
+        .submit{
+          background: #2B86F6;
+          color: #fff;
+          margin-right: 1rem;
+          cursor: pointer;
+        }
+        .cancel{
+          color: #666;
+          border: solid 1px #DDDDDD;
+          cursor: pointer;
+        }
+        .submit:active{
+          background: #00bfff;
+        }
+        .cancel:active{
+          color: #333;
+        }
+      }
+    }
+  }
+}
+
+//按钮
+.btn_normal{
+  background: #2B86F6;
+  font-size: 14px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.btn_normal:hover{
+  box-shadow: 2px 2px 15px #BFD1FA;
+}
+
+
+//顶部管理
+.robotTop{;
+  height: 4rem;
+  min-height: 4rem;
+  /*background-color: @blue;*/
+  background:linear-gradient(90deg,#2B86F6,#008ff8);
+  box-shadow:1rem 0 8rem rgba(187,187,187,0.31);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .left{
+    width: 11rem;
+    background: @deepBlue;
+    font-size: 2rem;
+    height: 100%;
+    color: #fff;
+  }
+  .mid{
+    flex: 1;
+    overflow-x: auto;
+    display: flex;
+    align-items: flex-end;
+    padding-left: 2rem;
+    height: 100%;
+    .robotItem{
+      height: 3rem;
+      width: 8rem;
+      min-width: 8rem;
+      line-height: 3rem;
+      text-align: center;
+      color: #fff;
+      cursor: pointer;
+      p{
+        width: 5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin: 0;
+        padding: 0;
+      }
+      span{
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+      }
+      .open{
+        background: @green;
+      }
+      .close{
+        background: @red;
+      }
+    }
+    .active{
+      background: @bg;
+      color: #333;
+      border-top-right-radius: 2px;
+      border-top-left-radius: 2px;
+    }
+    .addRobot{
+      width: 7rem;
+      min-width: 7rem;
+      height: 2rem;
+      color: #EBF4FF;
+      background: #24589B;
+      margin-bottom: 8px;
+      margin-left: 10px;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+  }
+  .right{
+    margin-right: 1rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    .change{
+      margin-right: 1rem;
+    }
+    .icon{
+      margin-right: 0.5rem;
+      width: 45px;
+      height: 45px;
+      overflow: hidden;
+      border-radius: 22.5px;
+    }
+    .userInfo{
+      display: flex;
+      align-items: center;
+      position: relative;
+      height: 4rem;
+      width: auto;
+      span{
+        width: auto;
+        max-width: 4rem;
+        height: 2rem;
+        line-height: 2rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-all;
+        text-align: right;
+      }
+      .fas{
+        margin-bottom: 6px;
+        margin-left: 6px;
+      }
+      .hoverBox{
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 4rem;
+        background: #fff;
+        color: #333;
+        z-index: 10;
+        width: 7rem;
+        border: solid 1px #ddd;
+        .hoverItem{
+          height: 2.5rem;
+          line-height: 2.5rem;
+          font-size: 14px;
+          cursor: pointer;
+        }
+        .hoverItem:hover{
+          color: @blue;
+        }
+        .hoverItem:nth-child(1){
+          border-bottom: solid 1px #ddd;
+        }
+      }
+    }
+    .userInfo:hover{
+      .hoverBox{
+        display: block;
+
+      }
+    }
+  }
+}
+
+
+//语义网属性
+.semanticType{
+  display: flex;
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  /*padding: 1rem;*/
+  .content{
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    .title{
+      width: 100%;
+      text-align: left;
+    }
+    .inputItem{
+      width: 100%;
+      text-align: left;
+      margin-top: 1rem;
+      padding-left: 10px;
+      font-size: 0.8rem;
+      .smallBtn{
+        font-size: 0.8rem;
+        width: 2.5rem;
+        margin-left: 0.5rem;
+      }
+      .inputContent{
+        display: flex;
+        align-items: center;
+        .addBtn{
+          display: flex;
+          align-items: center;
+          margin-left: 5px;
+          span{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 2rem;
+            width: 4rem;
+            border: solid 1px #ddd;
+            font-size: 0.8rem;
+            border-radius: 2px;
+            cursor: pointer;
+          }
+          span:last-child{
+            margin-left: 1rem;
+          }
+          .active,span:active{
+            border: solid 1px #2B86F6;
+            color: #2B86F6;
+          }
+        }
+      }
+      p{
+        font-size: 0.8rem;
+        margin-bottom: 8px;
+      }
+      select{
+        height: 2rem;
+        width: 10rem;
+        outline: none;
+        background:rgba(250,250,250,1);
+      }
+      select:focus{
+        border: solid 1px #2B86F6;
+      }
+      .inputTag{
+        outline: none;
+        width: 50%;
+        height: 2rem;
+        border: solid 1px #ddd;
+        background:rgba(250,250,250,1);
+        border-radius: 2px;
+        padding: 0 8px;
+      }
+      .inputTag:focus{
+        border: solid 1px #2B86F6;
+      }
+      .innerInput{
+        width: 50%;
+      }
+      .chose{
+        margin-top: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        color: #666;
+        span{
+          padding: 0 5px;
+          height: 1.5rem;
+          line-height: 1.5rem;
+          font-size: 10px;
+          border-radius: 2px;
+          border: solid 1px #ddd;
+          margin-right: 5px;
+        }
+      }
+      .chose:hover{
+        color: #333;
+      }
+    }
+    .btnGroup{
+      width: 100%;
+      height: 3rem;
+      min-height: 3rem;
+      background:rgba(236,241,247,1);
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+      margin-top: 1rem;
+      span{
+        width: 5rem;
+        font-size: 0.8rem;
+        height: 2rem;
+        line-height: 2rem;
+        cursor: pointer;
+      }
+      .submit{
+        background: #2B86F6;
+        color: #fff;
+      }
+      .submit:active{
+        background: #00aaec;
+      }
+      .cancel{
+        margin-left: 1rem;
+        border: solid 1px #ddd;
+        background: #fff;
+      }
+      .cancel:active{
+        background: #ddd;
+      }
+    }
+  }
+  .detailItem{
+    width: 220px;
+    .ctrl{
+      min-height: 2.5rem;
+      height: 2.5rem;
+      line-height: 2.5rem;
+      padding-left: 1rem;
+      border-bottom: solid 1px #f6f6f6;
+      background: #f6f6f6;
+      justify-content: space-between;
+      span{
+        font-size: 12px;
+        max-width: 40%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .ctrlBtn{
+        flex: 1;
+        text-align: right;
+        margin-right: 0.5rem;
+        i{
+          margin: 0 0.5rem;
+          cursor: pointer;
+        }
+        i:hover{
+          color: #2B86F6;
+        }
+      }
+    }
+    height: 100%;
+    border: solid 1px #ddd;
+    margin-left: -1px;
+  }
+}

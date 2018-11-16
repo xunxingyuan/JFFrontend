@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>敏感词管理</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.1.0/echarts.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="./common/styles/main.css" />
+</head>
+<body>
+<div id="app">
+    <div class="top">
+        敏感词管理
+    </div>
+    <div class="contentBox">
+        <div class="content">
+            <div class="tools">
+                <div class="flex">
+                    <el-button type="primary">+添加敏感词</el-button>
+                </div>
+                <div>
+                    <el-input placeholder="输入敏感词"></el-input>
+                </div>
+            </div>
+            <div class="showBox">
+                <div class="form">
+                    <table class="gtable">
+                        <tr class="gheader">
+                            <th>序号</th>
+                            <th>敏感词类型</th>
+                            <th>敏感词内容</th>
+                            <th>操作</th>
+                        </tr>
+                        <tr v-for="i in 5">
+                            <td>{{i}}</td>
+                            <td>垃圾广告</td>
+                            <td>tmd</td>
+                            <td>
+                                <span>编辑</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script src="./sensitiveWord/sensitiveWord.js"></script>
+</html>
