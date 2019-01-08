@@ -11,45 +11,141 @@
         <div class="innerLeft">
           <div class="innerTitle flexCenter">
             <span>分类</span>
-            <div class="ctrl">
+            <div class="ctrl" v-if="userAuth.admin">
               <i class="iconfont icon-tianjia" @click="createCategory"></i>
               <i class="iconfont icon-bianji" @click="renameCategory"></i>
-              <i class="iconfont icon-fangdajing"></i>
+              <!--<i class="iconfont icon-fangdajing"></i>-->
               <i class="iconfont icon-shanchu" @click="removeCategory"></i>
             </div>
           </div>
           <div class="innerContent">
-            <div class="treeBox">
+            <div class="treeBox" @click="choseRoot">
               <!--<el-tree :data="treeData" node-key="categoryId" :default-checked-keys="extendKey"  :props="defaultProps" @node-click="handleNodeClick"></el-tree>-->
-              <tree-box :treeData="treeData" :config="selfConfig" :selectedItem="choseCategory" @select="handleNodeClick"></tree-box>
+              <tree-box :showAll="true" :treeData="treeData" :config="selfConfig" :selectedItem="choseCategory" @select="handleNodeClick"></tree-box>
+              <p v-if="treeData.length===0" style="margin-top: 2rem;margin-left:-1rem;font-size: 14px">暂无分类目录</p>
+
             </div>
           </div>
         </div>
         <div class="innerRight scrollbar" v-show="activeMode === 1">
-          <div class="rightTop">
-            <el-button type="primary" size="small" @click="addSceneItem">+ 新建场景</el-button>
+          <div class="rightTop" style="margin-bottom: 10px;display: flex;align-items: center;justify-content: space-between">
+            <div>
+              <el-button type="primary" size="small" @click="addSceneItem" v-if="sceneLimit.create">+ 新建场景</el-button>
+            </div>
+            <div>
+              <el-input
+                      style="width: 200px"
+                      size="small"
+                      placeholder="请输入内容"
+                      v-model="searchWord"
+                      @keyup.enter.native="searchQa">
+                <i slot="suffix" class="el-input__icon el-icon-search" @click="searchQa"></i>
+              </el-input>
+              <el-button size="small" @click="showFilter = !showFilter">高级搜索</el-button>
+            </div>
+
             <!--<el-button size="small">通用设置</el-button>-->
+          </div>
+          <div class="rightTools" v-if="checkList.length>0">
+            <div class="toolsBox">
+              <el-checkbox v-model="checkPage" label="本页全选" @change="choseOrUnChose"></el-checkbox>
+              <div class="flex" style="margin-left: 2rem">
+                <span class="toolsItem" v-for="item in checkTypeList">{{item.name}}</span>
+              </div>
+            </div>
           </div>
           <div class="rightBottom">
             <div class="rightContent">
+              <div class="filterBox" v-if="showFilter">
+                <div class="filterItem">
+                  <span class="itemName">搜索类型</span>
+                  <el-checkbox-group v-model="selectTypeData" @change="handleCheckedTypesChange">
+                    <el-checkbox v-for="(type,index) in typeList" :label="type.name" :key="index">{{type.name}}</el-checkbox>
+                  </el-checkbox-group>
+                </div>
+                <div class="filterItem">
+                  <span class="itemName">启用状态</span>
+                  <el-select size="small" v-model="searchFilterNew.status" @change="searchQa">
+                    <el-option v-for="(item,index) in statusList" :label="item.name" :value="item.value" :key="index"></el-option>
+                  </el-select>
+                </div>
+                <div class="filterItem">
+                  <span class="itemName">创建时间</span>
+                  <el-date-picker
+                          v-model="selectCreateTime"
+                          @change="timeCreateChange"
+                          size="small"
+                          type="datetimerange"
+                          value-format="timestamp"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期">
+                  </el-date-picker>
+                </div>
+
+                <div class="filterItem">
+                  <span class="itemName">修改时间</span>
+                  <el-date-picker
+                          v-model="selectUpdateTime"
+                          @change="timeUpdateChange"
+                          size="small"
+                          type="datetimerange"
+                          value-format="timestamp"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期">
+                  </el-date-picker>
+                </div>
+
+              </div>
               <table class="gtable">
                 <tr class="gheader">
+                  <th>序号</th>
                   <th>场景</th>
-                  <th>场景类型</th>
-                  <th>状态</th>
-                  <th>操作</th>
+                  <!--<th>场景类型</th>-->
+                  <th>启用状态</th>
+                  <th>编辑状态</th>
+                  <th>创建时间</th>
+                  <th>修改时间</th>
+                  <th width="250">操作</th>
                 </tr>
-                <tr v-for="item in sceneList">
-                  <td style="color: #2B86F6;" @click="editScenesContent(item)">{{item.sceneName}}</td>
-                  <td>{{item.sceneType}}</td>
-                  <td>
-                    <span v-if="item.status === 0">生效</span>
-                    <span v-else>未生效</span>
+                <tr v-for="(item,index) in sceneList">
+                  <th>
+                    <el-checkbox-group v-model="checkList">
+                      <el-checkbox :label="totalCount- 10*(searchFilter.page-1)-index"  :key="index+1"></el-checkbox>
+                    </el-checkbox-group>
+                    <!--{{index+1}}-->
+
+                  </th>
+                  <td style="color: #2B86F6;" @click="editScenesContent(item)" :title="item.sceneName">
+                    <div class="text">
+                      {{item.sceneName}}
+                    </div>
                   </td>
+                  <!--<td>{{item.sceneType}}</td>-->
                   <td>
-                    <span class="release" @click.stop="releaseScene(item)">发布</span>
-                    <span class="edit" @click.stop="editScenes(item)">编辑</span>
-                    <span class="del" @click.stop="removeScenes(item.sceneId)">删除</span>
+                    <span v-if="item.status === 0" style="color: #666">未生效</span>
+                    <span v-else style="color: #6ce26c">生效</span>
+                  </td>
+                  <td>编辑中</td>
+                  <td>{{new Date(item.created).toLocaleString()}}</td>
+                  <td>{{new Date(item.updated).toLocaleString()}}</td>
+                  <td>
+                    <span class="edit" v-if="sceneLimit.submit">
+                      <el-popover
+                              placement="bottom-start"
+                              width="13rem"
+                              trigger="hover"
+                      >
+                        <p>确定这个场景通过审核吗？</p>
+                        <div style="text-align: center; margin-top: 1rem;">
+                          <el-button type="primary" size="mini">通过</el-button>
+                          <el-button size="mini" type="text">取消</el-button>
+                        </div>
+                        <span slot="reference">审核</span>
+                      </el-popover>
+                    </span>
+                    <span class="release" @click.stop="releaseScene(item)" v-if="sceneLimit.submit">同步场景</span>
+                    <span class="edit" @click.stop="editScenes(item)" v-if="sceneLimit.edit">编辑</span>
+                    <span class="del" @click.stop="removeScenes(item.sceneId)" v-if="sceneLimit.delete">删除</span>
                   </td>
                 </tr>
               </table>
@@ -57,7 +153,8 @@
               <div class="pageBox">
                 <el-pagination
                         background
-                        layout="prev, pager, next"
+                        @current-change="handleCurrentChange"
+                        layout="total,prev, pager, next"
                         :total="totalCount">
                 </el-pagination>
               </div>
@@ -130,43 +227,42 @@
               </el-switch>
             </div>
           </div>
-          <!--<div class="addItem">-->
-            <!--<p>场景类型：</p>-->
-            <!--<div class="itemInput">-->
-              <!--<el-select v-model="sceneType" placeholder="请选择">-->
-                <!--<el-option-->
-                        <!--v-for="item in typeArr"-->
-                        <!--:key="item.value"-->
-                        <!--:label="item.label"-->
-                        <!--:value="item.value">-->
-                <!--</el-option>-->
-              <!--</el-select>-->
-            <!--</div>-->
-          <!--</div>-->
           <div class="addItem" v-if="selectedScenes=== ''">
             <p>文件上传:</p>
             <div class="itemInput">
               <el-switch
                       v-model="initUpload"
                       active-color="#13ce66"
-                      inactive-color="#ff4949">
+                      inactive-color="#D1D1D1">
               </el-switch>
             </div>
           </div>
         </div>
         <div class="addBtn">
-          <el-button type="primary" @click="createScenes()">确认</el-button>
           <el-button @click="addScenes = false">取消</el-button>
+          <el-button type="primary" @click="createScenes()">确认</el-button>
+
         </div>
       </div>
       <div class="fileUpload" v-if="initUpload">
         <el-upload
                 class="upload-demo"
                 drag
-                action="https://jsonplaceholder.typicode.com/posts/"
+                :file-list="fileListScene"
+                ref="uploadScene"
+                :auto-upload="false"
+                :on-change="checkSceneFile"
+                :data="uploadScene"
+                :before-upload="beforeSceneUpload"
+                :on-success="handleSceneUploadSuccess"
+                :on-error="handleError"
+
+                action="/api/scene"
+                :limit="1"
                 multiple>
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          <div class="el-upload__tip" slot="tip">只能上传arff文件，且不超过10Mb</div>
         </el-upload>
       </div>
     </section>
@@ -185,6 +281,7 @@
                   class="upload-demo"
                   ref="upload"
                   drag
+                  :file-list="fileList"
                   :data="uploadArgs"
                   :auto-upload="false"
                   :before-upload="beforeUpload"
@@ -196,7 +293,7 @@
                   multiple>
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-            <div class="el-upload__tip" slot="tip">只能上传arff/aiml，且不超过10Mb</div>
+            <div class="el-upload__tip" slot="tip">只能上传aiml，且不超过10Mb</div>
           </el-upload>
         </div>
         <div class="btnGroup">
@@ -206,37 +303,50 @@
       </div>
     </section>
     <section class="showSceneEdit" v-if="sceneEdit">
-      <scenes-box :scenes="selectedScenes" @close="sceneEdit = false"></scenes-box>
+      <scenes-box :scenes="selectedScenes" @close="sceneEdit = false" :userLimit="sceneLimit"></scenes-box>
     </section>
   </div>
 </template>
 
 <script>
-  import { mapGetters, mapActions } from 'vuex'
   import aceEditor from 'vue2-ace-editor'
   import TreeBox from "../../../../components/common/tree.vue";
   import ScenesBox from "./scene/scenesBox.vue";
+  import { mapGetters, mapActions } from 'vuex'
+
 
   export default {
     name: 'scene',
-    computed:{
-      ...mapGetters({
-        choseRobot: 'getSelectRobot'
-      })
-    },
     components:{
       ScenesBox,
       TreeBox,
       aceEditor
     },
+    computed:{
+      ...mapGetters({
+        userAuth: 'getUserAuth'
+      })
+    },
     data(){
       return {
+        sceneLimit:{
+          'edit': true,
+          'submit': true,
+          'create': true,
+          'view': true,
+          'delete': true
+        },
+        choseRobot:{
+          robotId: ''
+        },
         treeData: [],
         treeList: [],
         selfConfig:{
           name: 'categoryName',
           child: 'children',
-          id: 'categoryId'
+          id: 'categoryId',
+          num: 'sceneNum',
+          numIntro: '场景数量'
         },
         defaultProps: {
           children: 'children',
@@ -254,6 +364,49 @@
           categoryId: '',
           robotId: ''
         },
+        showFilter: false,
+        searchType:'search',
+        searchFilterNew:{
+          page: 1,
+          limit: 10,
+          content: '',
+          status: 1,
+          createdStart: '',
+          createdEnd: '',
+          updatedStart: '',
+          updatedEnd: '',
+          scene: 1,
+          entrance: 1,
+          node: 1,
+          answer: 1
+        },
+        selectTypeData: ['问答名称','入口问题','问答内容','问答回答'],
+        selectCreateTime:[],
+        selectUpdateTime:[],
+        typeList:[{
+          name: '问答名称'
+        },{
+          name: '入口问题'
+        },{
+          name: '问答内容'
+        },{
+          name: '问答回答'
+        }],
+
+        statusList:[{
+          name: '全部',
+          value: ''
+        },{
+          name: '生效',
+          value: 1
+        },{
+          name: '未生效',
+          value: 0
+        }],
+
+
+
+        searchWord: '',
         totalCount: 0,
         addScenes: false,
         selectedScenes: '',
@@ -279,8 +432,12 @@
           name: '编辑模式'
         },{
           id: 2,
-          name: 'aiml管理'
+          name: 'aiml模式'
         }],
+//        sceneMode:[{
+//          id:1,
+//          name: '编辑模式'
+//        }],
         activeMode: 1,
         aimlTree: [],
         aimlList: [],
@@ -294,21 +451,66 @@
           categoryId:'',
           robotId:''
         },
+        uploadScene:{
+          sceneName:'',
+          categoryId: '',
+          sceneType: '',
+          robotId: ''
+        },
         sceneEdit: false,
+        fileList:[],
+        fileListScene: [],
+        checkList:[],
+        checkPage: false,
+        checkTypeList:[{
+          name: '审核'
+        },{
+          name: '启用'
+        },{
+          name: '停用'
+        },{
+          name: '删除'
+        },{
+          name: '设定有效时间'
+        }],
       }
     },
     methods:{
+      //修改权限
+      changeUserLimit: function () {
+        let robotId = window.sessionStorage.getItem('robotId')||this.$route.query.robotId
+        if(!this.userAuth.admin){
+          let authData = this.userAuth.data.categoryAuthority[robotId]
+          if(authData){
+            authData.forEach((e)=>{
+              if(e.conversationType === 'scene'){
+                this.sceneLimit.submit =  e.audit === 1
+                this.sceneLimit.create =  e.create === 1
+                this.sceneLimit.edit =  e.edit === 1
+                this.sceneLimit['delete'] =  e.delete === 1
+                this.sceneLimit.view =  e.view === 1
+              }
+            })
+          }
+
+        }
+      },
       //分类点击
       handleNodeClick: function (val) {
         this.choseCategory = val
+        this.searchType = 'node'
         this.searchFilter = {
-          page: 0,
+          page: 1,
           categoryId: val.categoryId,
           robotId: this.choseRobot.robotId
         }
         this.getSceneList()
         this.getAimlListData()
         this.showAimlEditor = false
+      },
+      //点击空白
+      choseRoot: function () {
+        this.choseCategory = ''
       },
 
       //获取aiml场景
@@ -331,19 +533,84 @@
       },
       //获取分类树
       getCategory: function () {
-        this.$api.scene.category.getTree({
-          robotId: this.choseRobot.robotId
-        }).then((res)=>{
-          if(res.status === 200){
-            this.treeData = []
-            this.treeList = []
-            this.treeData.push(res.tree)
-            this.getTreeList(this.treeData,this.treeList)
+        let role = window.sessionStorage.getItem('userRole')
+        let userId = window.sessionStorage.getItem('userId')
+        if(role === 'admin'){
+          this.$api.scene.category.getTree({
+            robotId: this.choseRobot.robotId
+          }).then((res)=>{
+            if(res.status === 200){
+              this.treeData = []
+              this.treeList = []
+              this.treeData = res.tree.children
+              this.getTreeList(this.treeData,this.treeList)
+            }
+          })
+        }else{
+          this.$api.user.menu.getUserMenu({
+            botId: this.choseRobot.robotId,
+            userId: userId
+          }).then((res)=>{
+            if(res.status===200){
+              this.treeData = []
+              this.treeList = []
+              this.treeData = res.data.scene
+              this.getTreeList(this.treeData,this.treeList)
+            }
+          })
+        }
+      },
+      handleCurrentChange: function (val) {
+        this.searchFilter.page = val
+        this.searchFilterNew.page = val
+        if(this.searchType === 'search'){
+          this.searchQaCtrl()
+        }else{
+          this.getSceneList()
+        }
+
+      },
+      handleCheckedTypesChange: function (val) {
+        this.searchFilterNew.content = 0
+        this.searchFilterNew.entrance = 0
+        this.searchFilterNew.node = 0
+        this.searchFilterNew.answer = 0
+        val.forEach((e)=>{
+          if(e === '问答名称'){
+            this.searchFilterNew.content = 1
+          }else if(e === '入口问题'){
+            this.searchFilterNew.entrance = 1
+          }else if(e === '问答内容'){
+            this.searchFilterNew.node = 1
+          }else if(e === '问答回答'){
+            this.searchFilterNew.answer = 1
           }
         })
+        this.searchQa()
+      },
+      timeCreateChange: function (val) {
+        if(val){
+          this.searchFilterNew.createdStart = val[0]
+          this.searchFilterNew.createdEnd = val[1]
+        }else{
+          this.searchFilterNew.createdStart = ''
+          this.searchFilterNew.createdEnd = ''
+        }
+        this.searchQa()
+      },
+      timeUpdateChange: function (val) {
+        if(val){
+          this.searchFilterNew.updatedStart = val[0]
+          this.searchFilterNew.updatedEnd = val[1]
+        }else{
+          this.searchFilterNew.updatedStart = ''
+          this.searchFilterNew.updatedEnd = ''
+        }
+        this.searchQa()
       },
       //获取分类场景
       getSceneList: function () {
+        this.checkList = []
         this.$api.scene.scene.getSceneList(this.searchFilter).then((res)=>{
           if(res.status === 200){
             this.sceneList = res.result.list
@@ -351,51 +618,73 @@
           }
         })
       },
+      //搜索场景
+      searchQa: function () {
+        this.searchType = 'search'
+        this.searchFilterNew.page = 1
+        this.searchQaCtrl()
+
+      },
+      searchQaCtrl: function () {
+        this.searchFilterNew.content = this.searchWord
+
+        let filerData = {}
+        for(let data in this.searchFilterNew){
+          if(this.searchFilterNew[data]!== ''){
+            filerData[data] = this.searchFilterNew[data]
+          }
+        }
+
+
+        this.$api.scene.scene.searchScenes(filerData).then((res)=>{
+          if(res.status === 200){
+            this.sceneList = res.result.list
+            this.totalCount = res.result.totalCount
+          }
+        })
+      },
+
       //创建分类
       createCategory: function () {
-        if(this.choseCategory){
-          this.$prompt('在分类（'+this.choseCategory.categoryName+')下创建分类，请输入分类名称', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-          }).then(({ value }) => {
-            this.$api.scene.category.addCategory({
-              categoryName: value,
-              categoryPid: this.choseCategory.categoryId,
-              robotId: this.choseRobot.robotId
-            }).then((res)=>{
-              if(res.status === 200){
-                this.$message({
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 1000
-                });
-                this.$api.scene.category.getTree({
-                  robotId: this.choseRobot.robotId
-                }).then((resp)=>{
-                  if(resp.status === 200){
-                    let tree = []
-                    let result = []
-                    tree.push(resp.tree)
-                    this.checkCategoryFromTree(tree,this.choseCategory.categoryId,result,value)
-                  }
-                })
-
-              }else{
-                this.$message({
-                  message: res.msg,
-                  type: 'info',
-                  duration: 1000
-                });
-              }
-            })
-          })
-        }else{
-          this.$message({
-            message: '请先选择创建节点的父节点',
-            type: 'info',
-            duration: 1000
-          });
+        if(!this.choseCategory){
+          this.choseCategory = {
+            categoryName: '全部分类',
+            categoryId: 0
+          }
         }
+        this.$prompt('在分类（'+this.choseCategory.categoryName+')下创建分类，请输入分类名称', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(({ value }) => {
+          this.$api.scene.category.addCategory({
+            categoryName: value,
+            categoryPid: this.choseCategory.categoryId,
+            robotId: this.choseRobot.robotId
+          }).then((res)=>{
+            if(res.status === 200){
+              this.$message({
+                message: '创建成功',
+                type: 'success',
+                duration: 1000
+              });
+              let categoryData ={
+                categoryName: value,
+                categoryId: res.categoryId,
+                categoryPid: this.choseCategory.categoryId,
+                robotId: this.choseRobot.robotId,
+                children: []
+              }
+              this.addToPath(this.treeData,categoryData,this.choseCategory.categoryId)
+
+            }else{
+              this.$message({
+                message: res.msg,
+                type: 'info',
+                duration: 1000
+              });
+            }
+          })
+        })
       },
       //移除分类
       removeCategory: function () {
@@ -461,6 +750,22 @@
           });
         }
       },
+      //全选反选
+      choseOrUnChose: function () {
+        let len = this.sceneList.length
+        if(this.checkList.length === len){
+          this.checkList = []
+        }else{
+          this.sceneList.forEach((e,index)=>{
+            let indexResult = this.totalCount- 10*(this.searchFilter.page-1)-index
+
+            if(this.checkList.indexOf(indexResult) === -1){
+              this.checkList.push(indexResult)
+            }
+          })
+        }
+      },
+
       //add
       addToPath: function(arr,data,id){
         arr.forEach((e)=>{
@@ -503,19 +808,31 @@
       },
       //添加场景
       addSceneItem: function () {
-        let arr = []
-        this.getPathById(this.treeList,arr,this.choseCategory.categoryId)
-        this.selectedOptions = arr
-        this.selectedScenes = ''
-        this.scenesDataInput = ''
-        this.sceneType = 'SE'
-        this.addScenes = true
+        if(this.choseCategory&&this.choseCategory.categoryId !== 0){
+          let arr = []
+          this.getPathById(this.treeList,arr,this.choseCategory.categoryId)
+          this.selectedOptions = arr
+          this.selectedScenes = ''
+          this.scenesDataInput = ''
+          this.sceneType = 'SE'
+          this.scenesState = '1'
+          this.addScenes = true
+        }else{
+          this.$message({
+            message: '请先选择需要创建场景的分类',
+            type: 'info',
+            duration: 1000
+          });
+        }
+
+
       },
       //编辑场景
       editScenes: function (item) {
         this.selectedScenes = item
         this.scenesDataInput = item.sceneName
         this.sceneType = item.sceneType
+        this.scenesState = item.status
         let arr = []
         this.getPathById(this.treeList,arr,this.choseCategory.categoryId)
         this.selectedOptions = arr
@@ -523,8 +840,14 @@
       },
       //编辑场景内容
       editScenesContent: function (item) {
-        this.selectedScenes = item
-        this.sceneEdit = true
+        if(this.sceneLimit.view){
+          this.selectedScenes = item
+          this.sceneEdit = true
+          this.$store.dispatch('setScenesHistory',{
+            type: 'init',
+            data: item
+          })
+        }
       },
       //提交创建/修改
       createScenes: function () {
@@ -536,26 +859,37 @@
             sceneName: this.scenesDataInput.trim(),
             categoryId: categoryId,
             sceneType: this.sceneType,
-            status: 0
+            status: this.scenesState
           }
           if(this.selectedScenes=== ''){
-            this.$api.scene.scene.addScenes(data).then((res)=>{
-              if(res.code === 'ok'){
-                this.addScenes = false
-                this.$message({
-                  type: 'success',
-                  message: '添加成功',
-                  duration: 1000
-                });
-                this.getSceneList()
-              }else{
-                this.$message({
-                  type: 'error',
-                  message: res.msg,
-                  duration: 1000
-                });
-              }
-            })
+
+            if(this.initUpload){
+              this.uploadScene.sceneName = this.scenesDataInput.trim()
+              this.uploadScene.robotId = this.choseRobot.robotId
+              this.uploadScene.categoryId = categoryId
+              this.uploadScene.sceneType = this.sceneType
+              this.uploadScene.status = 0
+              this.$loading()
+              this.$refs.uploadScene.submit();
+            }else{
+              this.$api.scene.scene.addScenes(data).then((res)=>{
+                if(res.code === 'ok'){
+                  this.addScenes = false
+                  this.$message({
+                    type: 'success',
+                    message: '添加成功',
+                    duration: 1000
+                  });
+                  this.getSceneList()
+                }else{
+                  this.$message({
+                    type: 'error',
+                    message: res.msg,
+                    duration: 1000
+                  });
+                }
+              })
+            }
           }else{
             data = {
               robotId: this.choseRobot.robotId,
@@ -563,7 +897,7 @@
               sceneName: this.scenesDataInput.trim(),
               categoryId: categoryId,
               sceneType: this.sceneType,
-              status: 0
+              status: this.scenesState
             }
             this.$api.scene.scene.editScenes(data).then((res)=>{
               if(res.code === 'ok'){
@@ -584,12 +918,24 @@
 
             })
           }
+        }else{
+          this.$message({
+            type: 'info',
+            message: '场景名称不能为空',
+            duration: 1000
+          });
         }
+      },
+      //上传成功
+      handleSceneUploadSuccess: function () {
+        this.getSceneList()
+        this.$loading().close()
+        this.addScenes = false
       },
       //发布场景
       releaseScene: function (item) {
         let _self=this
-        _self.$confirm('此操作将生成该场景信息的aiml, 是否继续?', '提示', {
+        _self.$confirm('此操作将同步该场景内容, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -601,9 +947,11 @@
             if(res.code === 'ok'){
               this.$message({
                 type: 'success',
-                message: '生成成功',
+                message: '同步成功',
                 duration: 1000
               });
+              this.getSceneList()
+              this.getAimlListData()
             }else{
               this.$message({
                 type: 'error',
@@ -796,18 +1144,20 @@
           });
         }
       },
-      checkFile(file){
+      checkFile(file,fileList){
         let index = file.name.lastIndexOf('.') + 1;
         let suffix = file.name.slice(index);
-        const isCorretType = suffix === 'arff'||suffix === 'aiml';
+        const isCorretType = suffix === 'aiml';
         const isLt10M = file.size / 1024 / 1024 < 10;
 
         if (!isCorretType){
           this.$message({
-            message:'文件类型只能为arff或者aiml！',
+            message:'文件类型只能为aiml！',
             type:'error',
             duration:1500
           })
+          this.fileListScene = []
+          this.$loading().close()
           return false;
         }
         if (!isLt10M){
@@ -816,6 +1166,43 @@
             type:'error',
             duration:1500
           })
+          this.fileListScene = []
+          this.$loading().close()
+          return false;
+        }
+        return true;
+      },
+      checkSceneFile: function (file,fileList) {
+        let index = file.name.lastIndexOf('.') + 1;
+        let suffix = file.name.slice(index);
+        const isCorretType = suffix === 'arff';
+        const isLt10M = file.size / 1024 / 1024 < 10;
+
+        if (!isCorretType){
+          this.$message({
+            message:'文件类型只能为arff',
+            type:'error',
+            duration:1500
+          })
+          this.fileList = []
+          this.$loading().close()
+          return false;
+        }
+        if (!isLt10M){
+          this.$message({
+            message:'文件大小不能超过10M！',
+            type:'error',
+            duration:1500
+          })
+          this.fileList = []
+          this.$loading().close()
+          return false;
+        }
+        return true;
+      },
+      beforeSceneUpload: function (file) {
+        let flag = this.checkSceneFile(file)
+        if (!flag){
           return false;
         }
         return true;
@@ -852,6 +1239,7 @@
         this.getAimlListData()
       },
       handleError(){
+        this.$loading().close()
         this.$message({
           message:'上传失败！',
           type:'error',
@@ -881,13 +1269,30 @@
       }
     },
     mounted(){
+      this.choseRobot.robotId = window.sessionStorage.getItem('robotId')
       this.getCategory()
+      this.changeUserLimit()
     },
     watch:{
       '$route': function () {
+        this.choseRobot.robotId = window.sessionStorage.getItem('robotId')
         if(this.$route.name === 'scene'){
           this.getCategory()
+          this.choseCategory = ''
           this.sceneList = []
+          this.changeUserLimit()
+        }
+      },
+      checkList: function () {
+        if(this.sceneList.length === this.checkList.length){
+          this.checkPage = true
+        }else{
+          this.checkPage = false
+        }
+      },
+      'userAuth': function () {
+        if(this.$route.name === 'scene'){
+          this.changeUserLimit()
         }
       }
     }
@@ -947,7 +1352,7 @@
           display: flex;
           flex-flow: column;
           align-items: center;
-          justify-content: flex-start;
+          justify-content: center;
           padding-top: 1rem;
           .addItem{
             /*margin-bottom: 1rem;*/

@@ -175,7 +175,7 @@
           reactPid = 0
         }else{
           if(this.addLevel === 'same'){
-            reactPid = this.question.nodeId
+            reactPid = this.question.nodePid
           }else if(this.addLevel === 'before'){
             reactPid = this.question.nodePid
           }else {

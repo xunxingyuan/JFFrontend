@@ -9,11 +9,11 @@
         <div class="arrow"></div>
       </div>
       <!--跳转问题-->
-      <div :nodeId="node.nodeId" class="nodeBlock scenes" @click="changeQuestion(node,nodeData)" v-if="node.hasOwnProperty('question')">
-        <p class="top">场景：{{node.scenesName}}</p>
-        <p class="mid" v-html="node.question"></p>
-        <div class="bot">
-          <i @click.stop="delFilter(node)" class="fa fa-trash-o" aria-hidden="true"></i>
+      <div :nodeId="node.nodeId" class="nodeBlock scenes" @click="changeQuestion(node,nodeData)" v-if="node.hasOwnProperty('sceneName')">
+        <p class="topContain">场景：{{node.sceneName}}</p>
+        <p class="midContain" v-html="node.content" style="padding-left: 10px"></p>
+        <div class="botContain">
+          <i v-if="userLimit.delete" @click.stop="delFilter(node)" class="fas fa-trash" aria-hidden="true"></i>
         </div>
         <node-cover :node="node"></node-cover>
         <i class="fa icons_jump_scenes"></i>
@@ -33,27 +33,27 @@
         <div class="topContain">追问</div>
         <div class="midContain"><i class="fa icons_robot"></i><span v-html="node.content"></span></div>
         <div class="botContain">
-          <i @click.stop="delFilter(node)" class="fas fa-trash" aria-hidden="true"></i>
+          <i v-if="userLimit.delete" @click.stop="delFilter(node)" class="fas fa-trash" aria-hidden="true"></i>
         </div>
         <node-cover :node="node"></node-cover>
       </div>
       <!--回答条件-->
       <div :nodeId="node.nodeId" class="nodeBlock condition" @dblclick = "doubleClick" @click="changeQuestion(node,nodeData)" v-else :ref="node.nodeId" :class="{'active': !selectQuestion.hasOwnProperty('answerId') && selectQuestion.nodeId === node.nodeId}">
-        <div class="topContain" v-if="node.nodeType=== 1||node.nodeType=== 2">单选选项</div>
-        <div class="topContain" v-else-if="node.nodeType=== 3">多选选项</div>
-        <div class="topContain" v-else-if="node.nodeType=== 4">文本输入</div>
-        <div class="topContain" v-else-if="node.nodeType=== 5">时间输入</div>
-        <div class="topContain" v-else-if="node.nodeType=== 6">地址输入</div>
+        <div class="topContain" v-if="node.nodeType=== 1">单选选项</div>
+        <div class="topContain" v-else-if="node.nodeType=== 2">多选选项</div>
+        <div class="topContain" v-else-if="node.nodeType=== 3">文本输入</div>
+        <div class="topContain" v-else-if="node.nodeType=== 4">时间输入</div>
+        <div class="topContain" v-else-if="node.nodeType=== 5">地址输入</div>
         <div class="topContain" v-else>选项</div>
 
         <div class="midContain" v-html="node.content"></div>
         <div class="botContain">
           <!--<i @click.stop="testQuestion(node)" class="fa fa-play-circle" aria-hidden="true"></i>-->
-          <i @click.stop="delFilter(node)" class="fas fa-trash" aria-hidden="true"></i>
+          <i v-if="userLimit.delete" @click.stop="delFilter(node)" class="fas fa-trash" aria-hidden="true"></i>
         </div>
         <node-cover :node="node"></node-cover>
       </div>
-      <div class="lineBox">
+      <div class="lineBox" v-if="!node.hasOwnProperty('sceneName')">
         <span class="midLine" v-if="(node.nodes!==null&&node.nodes!==undefined&&node.nodes.length!==0)||(node.jumpTo!== -1&&node.jumpTo!== '-1'&&node.jumpTo!== null&&node.jumpTo!== 'null'&&node.jumpTo!== undefined)||node.answer!==null"></span>
         <span class="rightTopLine" v-if="node.answer===null"></span>
         <div class="resize" v-if="node.nodes!==null&&node.nodes!==undefined&&node.nodes.length!==0">
@@ -61,16 +61,17 @@
           <i  class="fa icons_resize_add_new" @click="changeShow(node)" v-else></i>
         </div>
       </div>
-      <node-box v-if="node.nodes!==null&&!node.cover" :nodeData = node.nodes></node-box>
-      <node-box v-if="node.answer!==null&&!node.cover" :nodeData = node.answer></node-box>
+      <node-box v-if="node.nodes!==null&&!node.cover" :nodeData = node.nodes :userLimit="userLimit"></node-box>
+      <node-box v-if="node.jumpToNode&&node.jumpToNode!==null&&!node.cover" :nodeData= "setJump(node)" :userLimit="userLimit"></node-box>
+      <node-box v-if="node.answer!==null&&!node.cover" :nodeData = node.answer :userLimit="userLimit"></node-box>
 
     </div>
-    <div v-if="!Array.isArray(nodeData)" class="flex">
+    <div v-if="nodeData&&!Array.isArray(nodeData)&&nodeData.hasOwnProperty('answerId')" class="flex begin">
       <div class="lineBox">
         <span class="midLine"></span>
         <!--<span class="leftTopLine"></span>-->
         <!--<span class="leftBotLine"></span>-->
-        <span class="leftMidLine"></span>
+        <!--<span class="leftMidLine"></span>-->
         <div class="arrow"></div>
       </div>
       <!--最终回答-->
@@ -79,7 +80,7 @@
         <p class="midContain" ><i class="fa icons_robot"></i><span v-html="nodeData.content"></span></p>
         <div class="botContain">
           <!--<i @click.stop="testQuestion(nodeData)" class="fa fa-play-circle" aria-hidden="true"></i>-->
-          <i @click.stop="delFilter(nodeData)" class="fas fa-trash" aria-hidden="true"></i>
+          <i v-if="userLimit.delete" @click.stop="delFilter(nodeData)" class="fas fa-trash" aria-hidden="true"></i>
         </div>
         <node-cover :node="nodeData"></node-cover>
 
@@ -96,7 +97,7 @@
 
   export default {
     name: 'nodeBox',
-    props:['nodeData'],
+    props:['nodeData','userLimit'],
     data(){
       return{
         secondCover: true
@@ -119,6 +120,13 @@
       })
     },
     methods:{
+      setJump: function (node) {
+        let arr = []
+        let data = node.jumpToNode
+        data.fromData = node
+        arr.push(data)
+        return arr
+      },
       checkPosition: function (index,len) {
         if((index === 0)&&len!==1){
           return 'start'
@@ -140,14 +148,14 @@
       //选中节点
       changeQuestion: function (node,group) {
         this.$store.dispatch('setAddQuestionLevel','')
-        if(node.hasOwnProperty('question')){
+        if(node.hasOwnProperty('sceneName')){
           this.$store.dispatch('setJumpScenes',node)
           this.$store.dispatch('setScenesHistory',{
             type: 'add',
             data: node
           })
         }else {
-          if(node.nodeType===1||node.nodeType===2){
+          if(node.nodeType===1){
             this.$store.dispatch('setSelectQuestion',{
               select: node,
               group: group
@@ -191,15 +199,16 @@
           })
         }else{
           //推送结果位置
-          if(this.$refs[this.nodeData.answerId]&&this.$refs[this.nodeData.answerId].offsetLeft&&this.$refs[this.nodeData.answerId].clientWidth){
-            this.$store.dispatch('pushLocationData',{
-              id: this.nodeData.answerId,
-              reactId: this.nodeData.answerId,
-              left: this.$refs[this.nodeData.answerId].offsetLeft -5,
-              top: this.$refs[this.nodeData.answerId].offsetTop+30
-            })
+          if(this.nodeData&&this.nodeData.hasOwnProperty('answerId')){
+            if(this.$refs[this.nodeData.answerId]&&this.$refs[this.nodeData.answerId].offsetLeft&&this.$refs[this.nodeData.answerId].clientWidth){
+              this.$store.dispatch('pushLocationData',{
+                id: this.nodeData.answerId,
+                reactId: this.nodeData.answerId,
+                left: this.$refs[this.nodeData.answerId].offsetLeft -5,
+                top: this.$refs[this.nodeData.answerId].offsetTop+30
+              })
+            }
           }
-
         }
       },
       //删除节点
@@ -223,22 +232,67 @@
               _self.$store.dispatch('updateQuestionTree')
             })
           })
-        }else if(item.hasOwnProperty('question')){
+        }else if(item.hasOwnProperty('sceneName')){
+
           this.$confirm('此操作将永久删除该场景跳转, 是否继续?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
           }).then(()=>{
-            this.$api.scene.editor.delQuestionJump({
-              reactId: item.reactId
-            }).then((res)=>{
-              _self.$message({
-                message: '删除成功',
-                type: 'success',
-                duration: 1000
-              });
-              _self.$store.dispatch('updateQuestionTree')
-            })
+            if(item.fromData.nodeType === 0){
+              let reqData = {
+                sceneId: item.fromData.sceneId,
+                nodePid: item.fromData.nodePid,
+                nodeId: item.fromData.nodeId,
+                content: item.fromData.content,
+                jumpTo: -1,
+                nodeType: item.fromData.nodeType,
+                similarQuestionList: JSON.stringify(item.fromData.similarQuestionList),
+                slotList: JSON.stringify(item.fromData.slotList),
+                showFlag: item.fromData.showFlag
+              }
+              this.$api.scene.editor.updateSoloNode(reqData).then((res)=>{
+                if(res.status === 200){
+                  _self.$message({
+                    message: '删除成功',
+                    type: 'success',
+                    duration: 1000
+                  });
+                  _self.$store.dispatch('updateQuestionTree')
+                }else{
+                  _self.$message({
+                    message: res.msg,
+                    type: 'error',
+                    duration: 1000
+                  });
+                }
+              })
+            }else{
+              let data = {
+                sceneId: item.fromData.sceneId,
+                nodePid: item.fromData.nodePid,
+                nodeId: item.fromData.nodeId,
+                content: item.fromData.content,
+                jumpTo: -1,
+                nodeType: item.fromData.nodeType
+              }
+              this.$api.scene.editor.updateDuoNode(data).then((res)=>{
+                if(res.status === 200){
+                  _self.$message({
+                    message: '删除成功',
+                    type: 'success',
+                    duration: 1000
+                  });
+                  _self.$store.dispatch('updateQuestionTree')
+                }else{
+                  _self.$message({
+                    message: res.msg,
+                    type: 'error',
+                    duration: 1000
+                  });
+                }
+              })
+            }
           })
         }else{
           this.$confirm('此操作将永久删除该项及其子项, 是否继续?', '提示', {

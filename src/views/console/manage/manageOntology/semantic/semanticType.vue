@@ -18,10 +18,10 @@
         </div>
         <div class="inputItem">
           <p>域节点</p>
-          <input type="radio" name="fieldRadio" id="isField" value="1" v-model="isClass"/>
-          <label for="isField">是</label>
-          <input type="radio" name="fieldRadio" id="notField" value="2" v-model="isClass"/>
-          <label for="notField">否</label>
+          <input type="radio" name="fieldRadio" id="isField" value="2" v-model="isClass"/>
+          <label for="isField" style="margin: 0 5px;">是</label>
+          <input type="radio" name="fieldRadio" id="notField" value="1" v-model="isClass"/>
+          <label for="notField" style="margin: 0 5px;">否</label>
         </div>
         <div class="inputItem">
           <p>通用域路径</p>
@@ -49,7 +49,7 @@
         </div>
         <div class="inputItem">
           <p>父类</p>
-          <input class="inputTag" type="text" v-model="classMsg.parents[0].browserText"  readonly/>
+          <input class="inputTag" type="text" v-model="parentData"  readonly/>
         </div>
         <div class="inputItem">
           <p class="flex" style="align-items: center">属性 <span class="smallBtn btn_normal" @click="addPropertyItem()">添加</span> </p>
@@ -143,7 +143,8 @@
         sameWordList:[],
         userSameWordList: [],
         selectPropertyList:[],
-        isClass:1
+        isClass:1,
+        parentData: ''
       }
     },
     mounted(){
@@ -157,10 +158,12 @@
         if(this.classMsg){
           this.selectNode = this.classMsg
           this.isClass = this.classMsg.isClass
-          console.log(this.selectNode)
           this.sameWordList = this.classMsg.synonyms
           this.selectPropertyList = []
           this.userSameWordList = this.classMsg.userSynonyms
+          if(this.classMsg.hasOwnProperty('parents')&&this.classMsg.parents.length>0){
+            this.parentData = this.classMsg.parents[0].browserText
+          }
           if (this.classMsg.propertyList.length > 0){
             this.classMsg.propertyList.forEach((e,index)=>{
               this.selectPropertyList.push({
@@ -207,12 +210,13 @@
           frame: JSON.stringify(this.selectNode)
         }
         this.$api.ontology.setSemanticClass(data,'update').then((res)=>{
-          if(res.data.code === 'ok'){
+          if(res.code === 'ok'){
             this.$message({
               message: '修改成功',
               type: 'success',
               duration: 1000
             });
+            this.$emit('changeName',this.selectNode.subject.browserText)
           }
         })
       },

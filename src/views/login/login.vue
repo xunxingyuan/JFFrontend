@@ -24,7 +24,7 @@
         <span class="tips">{{userInfo.password.tips}}</span>
       </div>
       <span class="btn" @click="login()">登录</span>
-      <p class="registerTips" @click="register()">没有账户，立即注册</p>
+      <!--<p class="registerTips" @click="register()">没有账户，立即注册</p>-->
     </div>
     <div class="bg">
 
@@ -33,6 +33,8 @@
 </template>
 
 <script>
+  import md5 from 'js-md5'
+
   export default {
     name: 'login',
     data(){
@@ -54,14 +56,14 @@
       login: function () {
 
         let data = {
-          username: this.userInfo.username.value,
-          password: this.userInfo.password.value
+          username: this.userInfo.username.value.trim(),
+          password: md5.base64(this.userInfo.password.value.trim())
         }
 
 
-        if(this.userInfo.username.value===''){
+        if(this.userInfo.username.value.trim()===''){
           this.userInfo.username.tips = '用户名不能为空'
-        }else if(this.userInfo.password.value===''){
+        }else if(this.userInfo.password.value.trim()===''){
           this.userInfo.password.tips = '密码不能为空'
         }else{
           this.userInfo.username.tips = ''
@@ -70,9 +72,19 @@
           this.$api.user.login(data).then((res)=>{
             if(res.status === 200){
               window.sessionStorage.setItem('user',this.userInfo.username.value)
-              this.$router.push({
-                name: 'robotManage'
-              })
+              window.sessionStorage.setItem('userInfo',JSON.stringify(res.data))
+              window.sessionStorage.setItem('userId',this.userInfo.userId)
+              if(res.data.pid === '0'){
+                window.sessionStorage.setItem('userRole','admin')
+                this.$router.push({
+                  name: 'totalView'
+                })
+              }else{
+                window.sessionStorage.setItem('userRole','user')
+                this.$router.push({
+                  name: 'robot'
+                })
+              }
             }else{
               console.log(res)
               this.$message({

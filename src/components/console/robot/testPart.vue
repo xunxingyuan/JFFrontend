@@ -20,14 +20,16 @@
             <div class="textBox">
               <div class="text">
                 <p v-html="item.text"></p>
-                <p class="innerItem" v-for="(data,index) in item.conditions" @click.once="setValue(data)" v-if="data!==''">{{index+1}}. <span v-html="data"></span></p>
+                <p v-if="item.chose"  class="innerItem" v-for="(chose,choseIndex) in item.chose" @click.once="setValue(chose.content)">{{choseIndex+1}}、{{chose.content}}</p>
+                <p v-if="item.conditions&&item.conditions.length!==0" style="margin-top: 5px">您可能还想了解以下内容：</p>
+                <p class="innerItem" v-for="(data,indexSecond) in item.conditions" @click.once="setValue(data)" v-if="data!==''">{{indexSecond+1}}.{{data}}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="input flex">
-        <div class="timeSelect" v-if="showOption.type===5">
+        <div class="timeSelect" v-if="showOption.type===4">
           <el-date-picker
             v-model="selectTime"
             type="datetime"
@@ -35,7 +37,7 @@
             @change="selectTimeItem">
           </el-date-picker>
         </div>
-        <div class="timeSelect" v-if="showOption.type===6">
+        <div class="timeSelect" v-if="showOption.type===5">
           <el-cascader
             :options="areaData"
             v-model="areaSelect"
@@ -105,7 +107,7 @@
         },
         options: [],
         robotId: '',
-        robotObject: ''
+        robotObject: '',
       }
     },
     computed:{
@@ -130,8 +132,9 @@
         this.sendTalkNew()
       },
       sendTalkNew: function () {
+        let robotId = window.sessionStorage.getItem('robotId')
         let data = {
-          robotId: this.choseRobot.robotId,
+          robotId: robotId,
           source: 'web',
           content: this.inputText,
           attributes: JSON.stringify({}),
@@ -142,12 +145,42 @@
             console.log(res)
             if(res.msg === 'ok'){
               this.inputText = ''
-              this.talkReplyList.push({
+              this.showOption.type = ''
+              this.selectTime = ''
+              this.selectArea = []
+              let resultData = {
                 text: res.data.content,
                 conditions: [],
+                chose:[],
                 type: 'robotPart',
                 data: res.data.attributes
-              })
+              }
+              if(res.data.recommendDataSet){
+                for(let i in res.data.recommendDataSet){
+                  console.log(i)
+                  console.log(res.data.recommendDataSet[i])
+                  resultData.conditions.push(res.data.recommendDataSet[i].question)
+                }
+              }
+              if(res.data.optionType&&res.data.options){
+                let option = res.data.options
+                this.showOption.type = res.data.optionType
+                if(res.data.optionType=== 1||res.data.optionType=== 2){
+                  option.forEach((e)=>{
+                    resultData.chose.push(e)
+                  })
+                }else if(res.data.optionType=== 3){
+
+                }else if(res.data.optionType=== 4){
+
+                }else if(res.data.optionType=== 5){
+
+                }
+              }
+
+
+
+              this.talkReplyList.push(resultData)
             }else{
               this.inputText = ''
               this.$message({
@@ -156,6 +189,7 @@
                 duration: 1000
               });
             }
+            this.scrollToBottom('testReplyBox')
           })
         }else{
           this.$message({
@@ -175,7 +209,7 @@
       },
       //选项点击
       setValue: function (data) {
-        if(this.showOption.type === 3){
+        if(this.showOption.type === 2){
 
           if(this.inputText === ''){
             this.inputText = data
@@ -338,6 +372,7 @@
                 width: auto;
                 max-width: 80%;
                 display: flex;
+                flex-flow: column;
                 word-break: break-all;
                 padding: 0.5rem;
                 color: #000;
@@ -352,7 +387,7 @@
                   background: #F4F4F4;
                   color: #2B86F6;
                   line-height: 1.5rem;
-                  margin-bottom: 5px;
+                  /*margin-bottom: 5px;*/
                   margin-top: 5px;
                   padding-left: 0.5rem;
                   padding-right: 0.5rem;
@@ -501,7 +536,7 @@
         flex-flow: column;
         .timeSelect{
           position: absolute;
-          top: 2rem;
+          top: 1rem;
           left: 0.5rem;
         }
         .change{
@@ -528,6 +563,7 @@
               border: none;
               font-size: 14px;
               resize: none;
+              background: transparent;
             }
           }
         }

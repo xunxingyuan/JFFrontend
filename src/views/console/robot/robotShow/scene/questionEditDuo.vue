@@ -103,24 +103,24 @@
             nodePid: this.question.nodeId,
             content: contentNew,
             jumpTo: -1,
-            nodeType: 3
+            nodeType: 2
           }
-          let nodes = this.question.nodes
-
           this.$api.scene.editor.addDuoNode(reqData).then((res)=>{
-//            if(nodes!==null&&nodes.length!==0){
-//              nodes.forEach((e)=>{
-//                this.changeFatherNode(e,res.result.reactId)
-//              })
-//            }
-
-            _self.$message({
-              message: '新增成功',
-              type: 'success',
-              duration: 1000
-            });
-            _self.close()
-            _self.$store.dispatch('updateQuestionTree')
+            if(res.code === 'ok'){
+              _self.$message({
+                message: '新增成功',
+                type: 'success',
+                duration: 1000
+              });
+              _self.close()
+              _self.$store.dispatch('updateQuestionTree')
+            }else{
+              _self.$message({
+                message: res.msg,
+                type: 'error',
+                duration: 1000
+              });
+            }
           })
         }else{
           let reqData = {
@@ -129,49 +129,34 @@
             nodePid: this.question.nodeId,
             content: contentNew,
             jumpTo: -1,
-            nodeType: 3
+            nodeType: 2
           }
           this.$api.scene.editor.updateDuoNode(reqData).then((res) => {
-            _self.$message({
-              message: '修改成功',
-              type: 'success',
-              duration: 1000
-            });
-            _self.close()
-            _self.$store.dispatch('updateQuestionTree')
+            if(res.code === 'ok'){
+              _self.$message({
+                message: '修改成功',
+                type: 'success',
+                duration: 1000
+              });
+              _self.close()
+              _self.$store.dispatch('updateQuestionTree')
+            }else{
+              _self.$message({
+                message: res.msg,
+                type: 'error',
+                duration: 1000
+              });
+            }
           })
         }
       },
-      //增加节点
-      addNode: function () {
-        let _self = this
 
-        let data = {
-          scenesId: this.question.scenesId,
-          reactPid: this.question.reactPid,
-          content: this.inputText,
-          jumpTo: -1,
-          reactType: 1
-        }
-        this.$api.scene.editor.addQuestionNode(data).then((res)=>{
-
-          if(res.code === 'ok'){
-            _self.$message({
-              message: '新增成功',
-              type: 'success',
-              duration: 1000
-            });
-            _self.close()
-            _self.$store.dispatch('updateQuestionTree')
-          }
-        })
-      },
       //修改子元素父节点
       changeFatherNode: function (item,pid) {
         let data = {
           reactId: item.reactId,
           scenesId: item.scenesId,
-          reactPid: pid,
+          nodePid: pid,
           content: item.content,
           jumpTo: item.jumpTo,
           reactType: 0

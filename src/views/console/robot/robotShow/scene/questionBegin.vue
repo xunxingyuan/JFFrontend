@@ -1,5 +1,5 @@
 <template>
-  <div class="questionBegin questionEditBox" v-if="state.begin">
+  <div class="questionBegin questionEditBox" v-if="state.begin" @click="similarData = []">
     <same v-if="sameOpen" :same="same" @deleteSame="deleteSame" @editSameItem="editSameItem" @saveSameItem="saveSameItem" @cancelSaveItem="cancelSaveItem" @close="sameOpen=false"></same>
     <question-slot v-if="slotShow" :slotData="slot" @editSlotItem="editSlotItem" @close="slotShow= false" @deleteSlot="deleteSlot" @saveSlotItem="saveSlotItem" @cancelSave="cancelSave"></question-slot>
     <div class="box animated fadeInRight">
@@ -15,10 +15,13 @@
         <div class="inputBoxItem">
           <div class="inputItem">
             <span class="inputMsg">*用户提问</span>
-            <el-input v-model="userQuestion"></el-input>
+            <el-input v-model="userQuestion" @blur="searchSimilar"></el-input>
           </div>
           <div class="del">
-            <span>—</span>
+            <!--<span>—</span>-->
+          </div>
+          <div class="similarBox" v-if="similarData.length!==0">
+              <p v-for="item in similarData">{{item}}</p>
           </div>
         </div>
         <p class="inputTitle">训练机器人</p>
@@ -103,7 +106,7 @@
       <div class="btnBox">
         <!--<span class="testBtn">测试一下</span>-->
         <div class="btnGroup">
-          <span class="submit" @click="submit()">提交</span>
+          <span class="submit" v-if="userLimit.edit" @click="submit()">提交</span>
           <span class="cancel" @click="close()">取消</span>
         </div>
       </div>
@@ -120,6 +123,7 @@
       QuestionSlot,
       Same},
     name: 'questionBegin',
+    props: ['userLimit'],
     computed:{
       ...mapGetters({
         state: 'getQuestionEditState',
@@ -130,6 +134,15 @@
     methods:{
       close: function () {
         this.$store.dispatch('closeQuestionEdit')
+      },
+      searchSimilar: function () {
+        this.$api.scene.editor.getSimilarQuestion({
+          question: this.userQuestion
+        }).then((res)=>{
+          if(res.status === 200){
+            this.similarData = res.data
+          }
+        })
       },
       submit: function () {
         let _self = this
@@ -143,9 +156,9 @@
           slotArr.push(e.value)
         })
 
-        if(this.question.parent!== null){
+        if(this.question.parent!== null&&this.question.parent.hasOwnProperty('question')&&this.question.parent.question){
           data = {
-            entranceId: this.question.parent.entranceId,
+            entranceId: this.question.parent.sceneId,
             question: this.userQuestion,
             similarQuestionList: JSON.stringify(arr),
             sceneId: this.scenesId,
@@ -198,11 +211,25 @@
       },
       addSame: function () {
         if(this.addSameData!==''){
-          this.same.push({
-            value: this.addSameData,
-            edit: false
+          let flag = true
+          this.same.forEach((e)=>{
+            if(e.value === this.addSameData ){
+              flag = false
+            }
           })
-          this.addSameData = ''
+          if(flag){
+            this.same.push({
+              value: this.addSameData,
+              edit: false
+            })
+            this.addSameData = ''
+          }else{
+            this.$message({
+              type: 'info',
+              message: '已有相同相似问！',
+              duration: 1000
+            });
+          }
         }
       },
       deleteSame: function (index) {
@@ -285,7 +312,8 @@
         slotShow: false,
         addSlotData: '',
         changeSlotItem: '',
-        giantan: false
+        giantan: false,
+        similarData:[]
       }
     },
     watch:{
@@ -343,6 +371,26 @@
         }
         .inputBoxItem{
           overflow: initial;
+          position: relative;
+          .similarBox{
+            position: absolute;
+            left: 6.5rem;
+            top: 2.7rem;
+            background: #fff;
+            width: 15rem;
+            border: solid 1px #ddd;
+            border-radius: 3px;
+            z-index: 10;
+            p{
+              height: 40px;
+              line-height: 40px;
+              padding: 0 1rem;
+              width: 15rem;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              word-break: break-all;
+            }
+          }
         }
       }
     }

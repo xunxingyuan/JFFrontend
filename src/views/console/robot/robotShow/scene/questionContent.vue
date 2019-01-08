@@ -137,9 +137,9 @@
         let _self = this
         let nodeId = ''
         let relationArr = []
-        this.conditionList.forEach((e)=>{
-          relationArr.push(e.reactId)
-        })
+//        this.conditionList.forEach((e)=>{
+//          relationArr.push(e.reactId)
+//        })
         nodeId = this.question.nodeId
         let data = {
           nodeId: nodeId,
@@ -147,42 +147,43 @@
           conditions: JSON.stringify(relationArr),
           opinion: this.other
         }
+        this.addAnswerData(data)
         let questionData
-        //先更新当前节点leaf为1
-        if(this.question.nodeType === 1){
-          questionData = {
-            sceneId: this.question.sceneId,
-            nodePid: this.question.nodePid,
-            nodeId: this.question.nodeId,
-            content: this.question.content,
-            jumpTo: this.question.jumpTo,
-            nodeType: this.question.nodeType,
-            similarQuestionList: JSON.stringify(this.question.similarQuestionList),
-            slotList: JSON.stringify(this.question.slotList),
-            showFlag: this.question.showFlag,
-            leaf: 1
-          }
-          this.$api.scene.editor.updateSoloNode(questionData).then((res)=>{
-            if(res.code === 'ok'){
-              this.addAnswerData(data)
-            }
-          })
-        }else{
-          questionData = {
-            nodeId: this.question.nodeId,
-            sceneId: this.question.sceneId,
-            nodePid: this.question.nodeId,
-            content: this.question.content,
-            jumpTo: this.question.jumpTo,
-            nodeType: this.question.nodeType,
-            leaf: 1
-          }
-          this.$api.scene.editor.updateDuoNode(questionData).then((res)=>{
-            if(res.code === 'ok'){
-              this.addAnswerData(data)
-            }
-          })
-        }
+//        //先更新当前节点leaf为1
+//        if(this.question.nodeType === 1){
+//          questionData = {
+//            sceneId: this.question.sceneId,
+//            nodePid: this.question.nodePid,
+//            nodeId: this.question.nodeId,
+//            content: this.question.content,
+//            jumpTo: this.question.jumpTo,
+//            nodeType: this.question.nodeType,
+//            similarQuestionList: JSON.stringify(this.question.similarQuestionList),
+//            slotList: JSON.stringify(this.question.slotList),
+//            showFlag: this.question.showFlag,
+//            leaf: 1
+//          }
+//          this.$api.scene.editor.updateSoloNode(questionData).then((res)=>{
+//            if(res.code === 'ok'){
+//              this.addAnswerData(data)
+//            }
+//          })
+//        }else{
+//          questionData = {
+//            nodeId: this.question.nodeId,
+//            sceneId: this.question.sceneId,
+//            nodePid: this.question.nodeId,
+//            content: this.question.content,
+//            jumpTo: this.question.jumpTo,
+//            nodeType: this.question.nodeType,
+//            leaf: 1
+//          }
+//          this.$api.scene.editor.updateDuoNode(questionData).then((res)=>{
+//            if(res.code === 'ok'){
+//              this.addAnswerData(data)
+//            }
+//          })
+//        }
       },
       //新增回答
       addAnswerData: function (data) {

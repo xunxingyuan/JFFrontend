@@ -9,9 +9,14 @@
           <span v-show="checkShow(index)">-</span>
         </div>
       </div>
-      <div @click="showChildCtrl(item,index)"  class="commonTreeNode" :class="{'lastOne': index=== treeData.length-1,'activeItem': selectedItem[config.id]=== item[config.id]}">{{item[config.name]}}</div>
+      <div @click.stop="showChildCtrl(item,index)"  class="commonTreeNode" :class="{'lastOne': index=== treeData.length-1,'activeItem': selectedItem[config.id]=== item[config.id]}">
+        <div class="nodeText">{{item[config.name]}}</div>
+          <el-tooltip v-if="config.hasOwnProperty('num')&&item[config.num]&&item[config.num]!==0" class="count" effect="dark" :content="config.numIntro" placement="top-end">
+            <div>{{item[config.num]}}</div>
+          </el-tooltip>
+      </div>
       <div class="childBox" v-if="checkShow(index)">
-        <tree-box :treeData.sync="item[config.child]" :config="config" @select="selectItem" :selectedItem="selectedItem"></tree-box>
+        <tree-box :treeData.sync="item[config.child]" :config="config" @select="selectItem" :selectedItem="selectedItem" :showAll="showChildFlag"></tree-box>
       </div>
     </div>
   </div>
@@ -19,16 +24,18 @@
 
 <script>
   export default {
-    props:['treeData','config','selectedItem'],
+    props:['treeData','config','selectedItem','showAll'],
     name: 'treeBox',
     data(){
       return{
         showList:[],
+        showChildFlag: false
       }
     },
     methods:{
       showHide: function (index) {
         let num = this.showList.indexOf(index)
+        this.showChildFlag = false
         if(num ===-1){
           this.showList.push(index)
         }else{
@@ -40,16 +47,30 @@
         this.showHide(index)
       },
       checkShow: function (index) {
-        let num = this.showList.indexOf(index)
-        if(num ===-1){
-          return false
+        if(this.showChildFlag){
+          return this.showChildFlag
         }else{
-          return true
+          let num = this.showList.indexOf(index)
+          if(num ===-1){
+            return false
+          }else{
+            return true
+          }
         }
       },
       //传递选择
       selectItem: function (item) {
         this.$emit('select',item)
+      }
+    },
+    mounted(){
+      this.showChildFlag = this.showAll
+    },
+    watch:{
+      'showAll': function () {
+        if(this.showAll){
+          this.showChildFlag = true
+        }
       }
     }
   }
@@ -85,8 +106,6 @@
         }
       }
       .commonTreeNode{
-        height: 2rem;
-        line-height: 2rem;
         width: 100%;
         text-align: left;
         padding-left: 1rem;
@@ -96,6 +115,26 @@
         cursor: pointer;
         background: #fff;
         font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-right: 10px;
+        .nodeText{
+          flex: 1;
+          height: 2rem;
+          line-height: 2rem;
+        }
+        .count{
+          max-width: 3rem;
+          background: #EBEBEB;
+          color: #BBBBBB;
+          padding: 2px 5px;
+          border-radius: 5px;
+          height: 1rem;
+          font-size: 12px;
+          position: relative;
+        }
+
       }
       .commonTreeNode:hover{
         background: #E4F0FF;

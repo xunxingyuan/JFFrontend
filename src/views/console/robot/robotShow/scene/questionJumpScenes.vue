@@ -10,20 +10,28 @@
           <div class="left">
             <p class="innerTitle">分类</p>
             <div class="innerBoxNew scrollbar">
-              <common-tree :treeData="treeData" :getFunction="getCategoryChild"  :selectedNode="selectedNode" @selectMenu="setSelectNode"></common-tree>
+              <tree-box :showAll="true" :treeData="treeData" :config="selfConfig" :selectedItem="choseCategory" @select="handleNodeClick"></tree-box>
             </div>
           </div>
           <div class="right">
             <p class="rightTitle">场景</p>
             <div class="scenesList scrollbar">
-              <div @click="choseScenesItem(item)" class="item" v-for="item in scenesData" :class="{'active':choseScenes.scenesId === item.scenesId }">
-                <p>{{item.scenesName}}</p>
+              <div @click="choseScenesItem(item)" class="item" v-for="item in scenesData" :class="{'active':choseScenes.sceneId === item.sceneId }">
+                <p>{{item.sceneName}}</p>
                 <span>
-                  <i class="fa icons_not_chose" v-if="choseScenes.scenesId !== item.scenesId"></i>
+                  <i class="fa icons_not_chose" v-if="choseScenes.sceneId !== item.sceneId"></i>
                   <i class="fa icons_chose" v-else></i>
                 </span>
               </div>
               <p class="tips" v-if="scenesData.length===0">暂无数据</p>
+              <div class="pageBox" style="margin-top: 1rem">
+                <el-pagination
+                        background
+                        @current-change="handleCurrentChange"
+                        layout="total,prev, pager, next"
+                        :total="totalCount">
+                </el-pagination>
+              </div>
             </div>
           </div>
         </div>
@@ -54,21 +62,43 @@
 </template>
 
 <script>
-//  import commonTree from '../../../components/common/tools/commonTree.vue'
   import nodeBox from './nodeBox.vue'
   import { mapGetters, mapActions } from 'vuex'
+  import TreeBox from "../../../../../components/common/tree.vue";
 
   export default {
     name: 'questionJumpScenes',
     components:{
-      commonTree,
+      TreeBox,
       nodeBox
     },
     data(){
       return {
-        selectedNode: '',
+        selfConfig:{
+          name: 'categoryName',
+          child: 'children',
+          id: 'categoryId'
+        },
+        choseCategory: '',
+        choseRobot:{
+          robotId: ''
+        },
+        searchFilter:{
+          page: 1,
+          categoryId: '',
+          robotId: ''
+        },
+        totalCount: 0,
         scenesData:[],
+
+
+        selectedNode: '',
+
         treeData: [],
+        treeList:[],
+
+
+
         choseScenes: '',
         scenesDataTree: '',
         showScenes: false
@@ -76,90 +106,105 @@
     },
     computed:{
       ...mapGetters({
-        categoryTree: 'getCategoryTree',
         state: 'getQuestionEditState',
         question: 'getSelectQuestion',
         jumpData: 'getJumpData',
       }),
     },
     methods:{
-      //获取子类
-      getCategoryChild: function (data) {
-        this.getScenes(data)
-        return new Promise((resolve,reject)=>{
-          let reqData = {
-            categoryPid: data.id
+      //获取分类树
+      getCategory: function () {
+        this.$api.scene.category.getTree({
+          robotId: this.choseRobot.robotId
+        }).then((res)=>{
+          if(res.status === 200){
+            this.treeData = []
+            this.treeList = []
+            res.tree.categoryName = "全部分类"
+            this.treeData.push(res.tree)
+            this.getTreeList(this.treeData,this.treeList)
           }
-          this.$api.category.getList(reqData).then((res)=>{
-            if(res.status===200){
-              res.result.forEach((e)=>{
-                e.label = e.categoryName
-                e.id = e.categoryId
-                e.show = false
-              })
-              resolve(res.result)
-            }else{
-              reject(res.result)
+        })
+      },
+      getTreeList: function (tree,arr) {
+        if(tree.length>0){
+          tree.forEach((e)=>{
+            arr.push(e)
+            if(e.children.length>0){
+              this.getTreeList(e.children,arr)
             }
           })
+        }
+      },
+      //分类点击
+      handleNodeClick: function (val) {
+        this.choseCategory = val
+        this.searchFilter = {
+          page: 0,
+          categoryId: val.categoryId,
+          robotId: this.choseRobot.robotId
+        }
+        this.getSceneList()
+      },
+      //获取分类场景
+      getSceneList: function () {
+        this.$api.scene.scene.getSceneList(this.searchFilter).then((res)=>{
+          if(res.status === 200){
+            this.scenesData = res.result.list
+            this.totalCount = res.result.totalCount
+          }
         })
       },
-      setSelectNode: function (val) {
-        this.selectedNode = val
-      },
-      //获取场景
-      getScenes: function (data) {
-        console.log(data)
-        this.$api.scene.getCategoryById(data).then((res)=>{
-          this.scenesData = res.result
-        })
+      handleCurrentChange: function (val) {
+        this.searchFilter.page = val
+        this.getSceneList()
       },
       close: function () {
         this.$store.dispatch('closeQuestionEdit')
       },
-      //获取目录
-      getPath: function () {
-        this.treeData = []
-        if(this.categoryTree){
-          this.categoryTree.forEach((e)=>{
-            this.treeData.push(e)
-          })
-        }
-      },
       //选择场景
       choseScenesItem: function (item) {
-        if(this.choseScenes.scenesId === item.scenesId){
-          this.choseScenes = ''
+        if(this.question.sceneId === item.sceneId){
+          this.$message({
+            message: '不能选择当前场景',
+            type: 'info',
+            duration: 1000
+          });
         }else{
-          this.choseScenes = item
-          this.$api.scene.editor.getScenesById({
-            id: item.scenesId
-          }).then((res)=>{
-            console.log(res)
-            let data = res.result
-            if(data!==null&&data.nodes!==null){
-              data.nodes.forEach((e)=>{
-                this.setSelectedState(e)
-              })
-              data.rollback = res.actions
-            }
-            this.scenesDataTree = data
-            this.showScenes = true
-          })
+          if(this.choseScenes.sceneId === item.sceneId){
+            this.choseScenes = ''
+          }else{
+            this.choseScenes = item
+            this.$api.scene.editor.getScenesById({
+              id: item.sceneId
+            }).then((res)=>{
+
+              if(res.status === 200){
+                let data = res.root
+                if(data!==null&&data.nodes!==null){
+                  data.nodes.forEach((e)=>{
+                    this.setSelectedState(e)
+                  })
+                  data.rollback = res.actions
+                }
+                this.scenesDataTree = data
+                this.showScenes = true
+              }
+            })
+          }
         }
+
+
+
       },
       //提交跳转选择
       submit: function () {
         let _self = this
-        console.log(this.question)
-        console.log(this.choseScenes)
         let data = {
-          reactId: this.question.reactId,
-          scenesId: this.choseScenes.scenesId,
-          content: '',
-          jumpTo: this.jumpData.to
+          from: this.question.nodeId,
+          to: this.jumpData.to
         }
-        this.$api.scene.editor.updateQuestionNode(data).then((res)=>{
+        this.$api.scene.editor.nodeJump(data).then((res)=>{
           if(res.code === 'ok'){
             _self.$message({
               message: '保存成功',
@@ -179,9 +224,7 @@
       },
       //初始化
       setSelectedState: function(item) {
-        if(item.leaf === null||item.leaf === 'null'){
-          item.selectState = 'jump'
-        }else if(item.type === 0){
+        if(item.nodeType === 0){
           item.selectState = 'jumpChose'
         }else{
           item.selectState = 'jump'
@@ -198,13 +241,15 @@
         }
       }
     },
-    watch:{
-      categoryTree: function () {
-        this.getPath()
-      }
-    },
     mounted(){
-      this.getPath()
+      this.choseRobot.robotId = window.sessionStorage.getItem('robotId')
+      this.getCategory()
+    },
+    watch:{
+      state: function () {
+        this.choseRobot.robotId = window.sessionStorage.getItem('robotId')
+        this.getCategory()
+      }
     }
   }
 </script>
@@ -229,6 +274,7 @@
       display: flex;
       flex-flow: column;
       padding: 0;
+      background: #fff;
       .title,.content,.btnGroup{
         width: 100%;
       }
@@ -245,6 +291,7 @@
       .content{
         height: 27rem;
         padding: 1rem;
+
         .contentBox{
           width: 100%;
           height: 100%;
@@ -268,6 +315,7 @@
               flex: 1;
               overflow: auto;
               overflow-x: hidden;
+              padding-left: 1rem;
             }
           }
           .right{
@@ -275,8 +323,10 @@
             padding-left: 1rem;
             display: flex;
             flex-flow: column;
+            background: #fff;
             .rightTitle{
               height: 2rem;
+              line-height: 2rem;
               min-height: 2rem;
               text-align: left;
               width: 100%;
@@ -355,6 +405,82 @@
         }
         .cancel:active{
           color: #333;
+        }
+      }
+    }
+    //内嵌场景页
+    .scenesChose{
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border: none;
+      overflow: auto;
+      z-index: 10;
+      display: flex;
+      background: #ffffff;
+      padding: 3.6rem 1rem 1rem 1rem;
+      padding-right: 2rem;
+      .topPart{
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3rem;
+        width: 100%;
+        background: #2B86F6;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        p{
+          font-size: 0.9rem;
+          color: #fff;
+        }
+        button{
+          width: 96px;
+          height: 36px;
+          background: #2FD8D6;
+          border-radius: 2px;
+          outline: none;
+          border: none;
+          color: #ffffff;
+          margin-left: 2rem;
+          cursor: pointer;
+        }
+        span{
+          margin-left: 2rem;
+          color: #fff;
+        }
+      }
+      .first{
+        height: 3.6rem;
+        width: 9rem;
+        min-width: 9rem;
+        border: solid 1px #ddd;
+        border-radius: 3px;
+        font-size: 0.8rem;
+        color: #666;
+      }
+      .line{
+        width: 1rem;
+        min-width: 1rem;
+        height: 3.6rem;
+        position: relative;
+        span{
+          width: 100%;
+          height: 1px;
+          background: #ddd;
+        }
+        .coverRight{
+          position: absolute;
+          right: -1px;
+          width: 1px;
+          height: 1.8rem;
+          top: 0;
+          background: #ffffff;
+          z-index: 1000;
         }
       }
     }

@@ -46,6 +46,11 @@ export default {
     getSceneList: (data)=>{
       return http.get('/api/scenes',data)
     },
+    //搜索场景
+    searchScenes:(data)=>{
+      let url = '/api/scene/' + window.sessionStorage.getItem('robotId') + '/search'
+      return http.get(url,data)
+    },
     //添加场景
     addScenes:  (data)=> {
       return http.postForm('/api/scene',data)
@@ -94,6 +99,12 @@ export default {
     }
   },
   editor:{
+    //入口问题相似
+    getSimilarQuestion: (data)=>{
+      data = addRobotId(data)
+      let url = '/api/entry/similarity'
+      return http.get(url,data)
+    },
     //获取问题树
     getScenesById: (data) =>{
       let reqData ={}
@@ -223,7 +234,7 @@ export default {
     //获取入口问题
     getScenesRoot: function (data) {
       data = addRobotId(data)
-      let url = '/api/entry/' + data.scenesId
+      let url = '/api/entry/' + data.sceneId
       return http.get(url,data)
     },
     //节点跳转

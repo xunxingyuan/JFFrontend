@@ -75,7 +75,7 @@
     },
     methods:{
       _initData: function () {
-        this.searchFilter.robotId = this.choseRobot.robotId
+        this.searchFilter.robotId = window.sessionStorage.getItem('robotId')
         this.$api.robotService.getService(this.searchFilter).then((res)=>{
           if(res.status === 200){
             this.serviceList = res.data.rows
@@ -180,6 +180,7 @@
     },
     watch:{
       choseRobot: function () {
+        this.searchFilter.robotId = window.sessionStorage.getItem('robotId')
         this._initData()
       }
     }

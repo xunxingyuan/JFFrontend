@@ -252,7 +252,7 @@ const actions = {
     let data = state.questionTree
     if(data!==null&&data.nodes!==null){
       data.nodes.forEach((e)=>{
-        setMoveSelectState(e,state.selectQuestion.reactId,'other')
+        setMoveSelectState(e,state.selectQuestion.nodeId,'other')
       })
     }
     commit('changeShowRelation')
@@ -261,7 +261,7 @@ const actions = {
     let data = state.questionTree
     if(data!==null&&data.nodes!==null){
       data.nodes.forEach((e)=>{
-        setMoveConditionSelectState(e,state.selectQuestion.reactId,'other')
+        setMoveConditionSelectState(e,state.selectQuestion.nodeId,'other')
       })
     }
     commit('changeShowRelation')
@@ -361,16 +361,18 @@ const actions = {
         source: 0
       }).then((res)=>{
         let options = []
-        if(res.data.code === 'ok'){
-          if(res.data.variableList){
-            options = res.data.variableList
+        if(res.code === 'ok'){
+          if(res.variableList){
+            options = res.variableList
           }else{
             options = []
           }
         }else{
           options = []
         }
+        console.log(options)
         commit('setGlobalVarList',options)
+
       })
     }
   }
@@ -687,17 +689,17 @@ function setMoveSelectState(item,id,flag) {
         })
       }
     }else{
-      if(item.jumpTo=== '-1'||item.jumpTo=== -1){
-        if(item.nodes===null||item.nodes===undefined){
-          item.moveSelect = 'show'
-        }else if(item.nodes[0]&&!item.nodes[0].answer!==null&&!item.nodes[0].hasOwnProperty('question')&&item.nodes[0].nodeType ===0){
-          item.moveSelect = 'show'
-        }else{
+      if(item.nodeType!==0){
+        if(item.jumpTo=== '-1'||item.jumpTo=== -1){
+
+          if(item.nodes===null||item.nodes===undefined||item.nodes.length===0){
+            item.moveSelect = 'show'
+          }
+        }else {
           item.moveSelect = 'cover'
         }
-      }else {
-        item.moveSelect = 'cover'
       }
+
       if(item.nodes!==null&&item.nodes!==undefined&&item.nodes.length!==0){
         item.nodes.forEach((e)=>{
           setMoveSelectState(e,id,'other')
@@ -724,14 +726,17 @@ function setMoveConditionSelectState(item,id,flag){
         })
       }
     }else{
-      if(item.type === 0){
+      if(item.nodeType === 0){
         if(item.nodes===null||item.nodes.length===0||item.nodes===undefined){
-          item.moveSelect = 'show'
-        }else if(item.nodes[0]&&!item.nodes[0].answer!==null&&!item.nodes[0].hasOwnProperty('question')&&item.nodes[0].nodeType === 1){
           item.moveSelect = 'show'
         }else{
           item.moveSelect = 'cover'
         }
+        // else if(item.nodes[0]&&!item.nodes[0].answer!==null&&!item.nodes[0].hasOwnProperty('question')&&item.nodes[0].nodeType === 1){
+        //   item.moveSelect = 'show'
+        // }else{
+        //   item.moveSelect = 'cover'
+        // }
       }else{
         item.moveSelect = 'cover'
       }
@@ -751,7 +756,7 @@ function setMoveConditionSelectState(item,id,flag){
   }
 }
 function changeNode(item,check) {
-  if((item.reactId === check.pId)&&!item.answer!==null&&!item.hasOwnProperty('question')){
+  if((item.nodeId === check.pId)&&!item.answer!==null&&!item.hasOwnProperty('question')){
     item.nodes = check.data
   }else if(item.nodes!==null&&item.nodes!==undefined&&item.nodes.length!==0){
     item.nodes.forEach((e)=>{

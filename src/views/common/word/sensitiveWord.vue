@@ -8,6 +8,7 @@
         <div class="tools">
           <div class="flex">
             <el-button size="small" type="primary" @click="addWord">+添加敏感词</el-button>
+            <el-button size="small" type="success" @click="syncWord">同步敏感词</el-button>
           </div>
           <div>
             <el-input placeholder="输入敏感词" v-model="searchFilter.sensitiveWord" @keyup.enter.native="searchWordCtrl">
@@ -20,7 +21,7 @@
             <table class="gtable">
               <tr class="gheader">
                 <th>序号</th>
-                <th>敏感词类型</th>
+                <th><div class="flex">敏感词类型 <table-filter :options="filterData" @selectFilter="choseFilter"></table-filter></div></th>
                 <th>敏感词内容</th>
                 <th>操作</th>
               </tr>
@@ -80,7 +81,10 @@
 </template>
 
 <script>
+  import TableFilter from "../../../components/common/filter.vue";
+
   export default {
+    components: {TableFilter},
     name: 'sensitiveWord',
     data(){
       return {
@@ -98,7 +102,8 @@
         editBox: false,
         wordList:[],
         total: 0,
-        editType: 'create'
+        editType: 'create',
+        filterData:[]
 //        searchFilter:{
 //          robotId: ''
 //        }
@@ -110,6 +115,16 @@
         this.$api.robotAnalysis.word.sensitive.getType().then((res)=>{
           if(res.msg === 'ok'){
             this.typeData =  res.data
+            this.filterData.push({
+              name: '全部',
+              typeCode: 'all'
+            })
+            res.data.forEach((e)=>{
+              this.filterData.push({
+                name: e.typeName,
+                typeCode: e.typeCode
+              })
+            })
           }
         })
         this.searchWord()
@@ -121,6 +136,15 @@
       },
       handleCurrentChange: function (val) {
         this.searchFilter.page = val
+        this.searchWord()
+      },
+      choseFilter: function (val) {
+        console.log(val)
+        if(val.typeCode === 'all'){
+          this.searchFilter.sensitiveType = ''
+        }else{
+          this.searchFilter.sensitiveType = val.typeCode
+        }
         this.searchWord()
       },
       searchWord: function () {
@@ -153,7 +177,7 @@
                 duration: 1000
               });
               this.editBox = false
-              this._intiData()
+              this._initData()
             }else{
               this.$message({
                 type: 'error',
@@ -230,6 +254,26 @@
           }
         })
         return type
+      },
+      syncWord: function () {
+        let robotId = this.$route.query.robotId
+        this.$api.robotAnalysis.word.sensitive.syncData({
+          robotId: robotId,
+        }).then((res)=>{
+          if(res.msg==='ok'){
+            this.$message({
+              type: 'success',
+              message: '同步成功',
+              duration: 1000
+            });
+          }else{
+            this.$message({
+              type: 'error',
+              message: res.msg,
+              duration: 1000
+            });
+          }
+        })
       }
     },
     mounted(){
@@ -249,7 +293,9 @@
 <style lang="less">
   .sensitiveWord{
     .bottom{
+      padding: 0 1rem;
       .content{
+        border: solid 1px #ddd;
         background: #fff;
         padding: 1rem;
         .chartBox{

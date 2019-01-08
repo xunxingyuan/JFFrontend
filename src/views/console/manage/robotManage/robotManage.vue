@@ -10,14 +10,14 @@
           <div class="ctrl">
             <div class="flexCenter first">
               <p>运行状态</p>
-              <span v-if="item.status==='2'" @click="unpublishRobot(item)">已发布</span>
-              <span class="unwork" v-if="item.status==='1'" @click="publishRobot(item)">未发布</span>
+              <span v-if="item.status==='2'" @click="unpublishRobot(item)"><i class="iconfont icon-yunhang"></i> 运行中</span>
+              <span class="unwork" v-if="item.status==='1'" @click="publishRobot(item)"><i class="iconfont icon-zanting"></i> 已暂停</span>
             </div>
-            <div class="flexCenter">
-              <p>同步状态</p>
-              <span v-if="item.sync==='1'">已同步</span>
-              <span class="unwork" v-if="item.sync==='0'" @click="syncRobot(item)">未同步</span>
-            </div>
+            <!--<div class="flexCenter">-->
+              <!--<p>同步状态</p>-->
+              <!--<span v-if="item.sync==='1'">已同步</span>-->
+              <!--<span class="unwork" v-if="item.sync==='0'" @click="syncRobot(item)">未同步</span>-->
+            <!--</div>-->
             <!--<span class="view" @click="manageRobot(item)">管理</span>-->
             <!--<span v-if="item.status==='1'" class="view" @click="publishRobot(item)">发布</span>-->
             <!--<span v-if="item.status==='2'" class="view" @click="unpublishRobot(item)">取消发布</span>-->
@@ -130,7 +130,7 @@
         })
       },
       unpublishRobot: function (item) {
-        this.$confirm('此操作将取消发布该机器人, 是否继续?', '提示', {
+        this.$confirm('此操作将停止该机器人, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -140,7 +140,7 @@
           }).then((res)=>{
             if(res.status === 200){
               this.$message({
-                message: '取消发布成功',
+                message: '停止成功',
                 type: 'success',
                 duration: 1000
               });
@@ -156,7 +156,7 @@
         })
       },
       publishRobot: function (item) {
-        this.$confirm('此操作将发布该机器人, 是否继续?', '提示', {
+        this.$confirm('此操作将启动该机器人, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -166,7 +166,7 @@
           }).then((res)=>{
             if(res.status === 200){
               this.$message({
-                message: '发布成功！',
+                message: '启动成功！',
                 type: 'success',
                 duration: 1000
               });
@@ -205,7 +205,16 @@
         },
       }
     },
-    mounted(){}
+    mounted(){
+      this._initData()
+    },
+    watch:{
+      '$route': function () {
+        if(this.$route.name === 'robotManage'){
+          this._initData()
+        }
+      }
+    }
   }
 </script>
 
@@ -223,7 +232,7 @@
         overflow: auto;
         align-items: flex-start;
         justify-content: flex-start;
-        background: #fff;
+        /*background: #fff;*/
         align-content: flex-start;
         padding: 2.5rem 1rem 1rem 1rem;
         .robotItem:hover{
@@ -239,6 +248,7 @@
           box-shadow: 0 0 2px 2px @gray;
           border-radius: 2px;
           position: relative;
+          background: #fff;
           .title{
             position: absolute;
             top: -1.5rem;
@@ -253,6 +263,7 @@
             overflow: hidden;
             word-break: break-all;
             line-height: 3rem;
+            padding: 0 1rem;
           }
           .ctrl{
             height: 9rem;
@@ -270,6 +281,11 @@
               color: @green;
               cursor: pointer;
               margin-left: 2rem;
+              display: flex;
+              align-items: center;
+              .iconfont{
+                margin-right: 3px;
+              }
             }
             .unwork{
               color: #000;

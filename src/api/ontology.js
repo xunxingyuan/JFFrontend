@@ -26,7 +26,7 @@ export default {
       return http.get(url,data)
     }else if(type === 'rollback'){
       url += '/' + data.ontologyId + '/version/rollback'
-      return http.get(url,data)
+      return http.postForm(url,data)
     }
   },
   //语义网类信息控制

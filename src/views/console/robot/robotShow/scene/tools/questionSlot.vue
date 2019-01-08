@@ -22,7 +22,8 @@
             :value="item.value">
           </el-option>
         </el-select>
-        <span class="btn blue"  @click="addSlotContent()">增加</span>
+        <el-button size="small" type="primary" @click="addSlotContent()">增加</el-button>
+        <!--<span class="btn blue"  >增加</span>-->
       </div>
       <div class="midContent scrollbar">
         <div class="sameItem flex" v-for="(item,index) in slotData" v-if="searchKey === ''||item.value.indexOf(searchKey)>-1">
@@ -31,9 +32,9 @@
             <el-input  v-model="changeSlotItem" v-else></el-input>
           </div>
           <div class="ctrl">
-            <i class="fa icons_edit_small" v-if="!item.edit" @click="editSlotItem(item,index)"></i>
+            <i class="fa icons_edit_small" style="margin-right: 5px" v-if="!item.edit" @click="editSlotItem(item,index)"></i>
             <i class="fa icons_del_small" v-if="!item.edit" @click="deleteSlot(index)"></i>
-            <i class="fa icons_save" v-if="item.edit" @click="saveSlotItem(item,index)"></i>
+            <i class="fa icons_save" style="margin-right: 5px" v-if="item.edit" @click="saveSlotItem(item,index)"></i>
             <i class="fa icons_cancel_save" v-if="item.edit" @click="cancelSave(index)"></i>
           </div>
         </div>

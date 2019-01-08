@@ -19,8 +19,8 @@
               <div v-for="item in list" class="ontologyItem" :class="{'active': selectOntology.projectId === item.projectId}" @click="choseOntology(item,'config')">
                 <div class="name">{{item.displayName}}</div>
                 <div class="ctrl">
-                  <span @click.stop="choseOntology(item,'config')">配置</span>
                   <span @click.stop="choseOntology(item,'edit')">编辑</span>
+                  <span @click="exportOntology(item)">导出</span>
                   <span @click.stop="releaseOntology(item)">发布</span>
                 </div>
               </div>
@@ -42,17 +42,21 @@
               <div class="name">
                 <p>语义网状态:</p>
                 <span v-if="selectOntology.isPublish===0">未发布</span>
-                <span v-if="selectOntology.isPublish===1">已发布</span>
+                <span v-if="selectOntology.isPublish===1">已发布(版本号：{{selectOntology.revisionNumber}})</span>
               </div>
+              <!--<div class="name" v-if="selectOntology.isPublish===1">-->
+                <!--<p>语义网版本号:</p>-->
+                <!--<span>{{selectOntology.revisionNumber}}</span>-->
+              <!--</div>-->
               <table class="gtable">
                 <tr class="gheader">
-                  <th>序号</th>
+                  <th>版本号</th>
                   <th>时间</th>
                   <th>概要信息</th>
                   <th>操作</th>
                 </tr>
                 <tr v-for="(item,index) in historyList">
-                  <td>{{index+1}}</td>
+                  <td>{{item.revisionNum}}</td>
                   <td>{{new Date(item.timestamp).toLocaleString()}}</td>
                   <td>{{item.summary}}</td>
                   <td>
@@ -71,7 +75,7 @@
           </div>
           <div class="contentBox">
             <semantic-tree v-show="selectType !== 'property'"></semantic-tree>
-            <semantic-type v-show="selectNode!==''&&selectType === 'type'"></semantic-type>
+            <semantic-type @changeName="updateName" v-show="selectNode!==''&&selectType === 'type'"></semantic-type>
             <semantic-property v-show="selectType === 'property'"></semantic-property>
             <semantic-detail v-show="selectType === 'detail'"></semantic-detail>
           </div>
@@ -143,7 +147,20 @@
         </div>
       </div>
     </div>
-
+    <el-dialog
+            title="选择导出类型"
+            :visible.sync="dialogVisible"
+            width="30%">
+      <div>
+        <el-select v-model="defaultType">
+          <el-option v-for="item in exportType" :label="item.label" :value="item.value" :key="item.value"></el-option>
+        </el-select>
+      </div>
+      <span slot="footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="exportData">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -192,9 +209,41 @@
         historyList: [],
         historyDetailList: [],
         showHistoryData: false,
+        dialogVisible: false,
+        exportType:[{
+          label: 'EXCEL',
+          value: 'xlsx'
+        },{
+          label: 'RDF/XML',
+          value: 'owl'
+        },{
+          label: 'Turtle',
+          value: 'ttl'
+        },{
+          label: 'OWL/XML',
+          value: 'owx'
+        },{
+          label: 'Manchester OWL Syntax',
+          value: 'omn'
+        },{
+          label: 'Functional OWL Syntax',
+          value: 'ofn'
+        }],
+        defaultType: 'xlsx'
       }
     },
     methods:{
+      //导出语义网
+      exportOntology: function (item) {
+        this.$store.dispatch('setSelectOntology',item)
+        this.dialogVisible = true
+      },
+      exportData: function () {
+        this.dialogVisible = false
+        let url = window.location.origin + '/api/ontology/' + this.selectOntology.projectId + '/export?ontologyId=' + this.selectOntology.projectId + '&format=' + this.defaultType
+        window.open(url,'_blank')
+      },
+
       //开始创建
       createOntologyCtrl: function () {
         this.addCtrl = true
@@ -211,8 +260,8 @@
           this.getVersion(item)
         }else if(type === 'edit'){
           this.treeRoot = [{
-            content: 'owl:Thing',
-            label: 'owl:Thing',
+            content: 'Thing',
+            label: 'Thing',
             iri: 'owl:Thing',
             projectId: item.projectId,
             id: 'owl:Thing',
@@ -239,6 +288,7 @@
         if(this.uploadData.displayName!==''){
           if(this.uploadInit){
             if(this.$refs.uploadData.uploadFiles.length!==0){
+              this.$loading()
               this.$refs.uploadData.submit()
             }else{
               this.$message({
@@ -299,6 +349,7 @@
                 message: '删除成功',
                 duration: 1000
               });
+              this.showRight = ''
               this.$store.dispatch('updateOntologyList')
             }else{
               this.$message({
@@ -317,6 +368,8 @@
           message: '创建成功',
           duration: 1000
         });
+        this.$loading().close()
+
         this.$store.dispatch('updateOntologyList')
         this.closeCreate()
       },
@@ -360,6 +413,20 @@
                 duration: 1000
               });
               this.$store.dispatch('updateOntologyList')
+//              if(item.projectId === this.selectOntology.projectId){
+//                let data = JSON.parse(JSON.stringify(this.selectOntology))
+//                data.isPublish = 1
+//                this.$store.dispatch('setSelectOntology',data)
+//
+//              }
+              setTimeout(()=>{
+                this.list.forEach((e)=>{
+                  if(e.projectId === item.projectId){
+                    this.choseOntology(e,'config')
+                  }
+                })
+              },500)
+
             }else{
               this.$message({
                 type: 'error',
@@ -368,6 +435,23 @@
               });
             }
           })
+        })
+      },
+      updateName: function (val) {
+        let arr = this.treeRoot
+        this.updateToTree(arr,this.selectNode.iri,val)
+        this.$store.commit('setOntologyTree',arr)
+      },
+      updateToTree: function (arr,iri,value) {
+        arr.forEach((e,index)=>{
+          if(e.iri === iri){
+            e.displayName = value
+            e.content = value
+          }else{
+            if(e.child.length>0){
+              this.updateToTree(e.child,iri,value)
+            }
+          }
         })
       },
       viewHistory: function (item) {
@@ -410,7 +494,9 @@
   @import "../../../../styles/common";
   .manageOntology{
     .bottom{
+      padding: 0 1rem;
       .content{
+        border: solid 1px #ddd;
         padding: 1rem;
         background: #fff;
         display: flex;

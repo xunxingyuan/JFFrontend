@@ -37,36 +37,55 @@
           url: 'robotManage',
           showChild: true,
           child:[]
-        },{
-          name:'统计分析',
-          icon: 'icon-tongjiyouhua',
-          url: 'manageAnalysis',
-          child: []
-        },{
-          name:'语义网管理',
-          icon: 'icon-changjinglinghuo',
-          url: 'manageOntology',
-          showChild: false,
-          child: []
-        },{
-          name:'权限管理',
-          icon: 'icon-yonghuquanxian1',
-          url: 'userLimit',
-          showChild: false,
-          child: []
-        },{
-          name:'系统设置',
-          icon: 'icon-shezhi',
-          url: 'systemSetting',
-          showChild: false,
-          child: []
-        },{
-          name:'操作日志',
-          icon: 'icon-caozuorizhi',
-          url: 'manageHistory',
-          showChild: false,
-          child: []
-        }],
+        },
+//          {
+//          name:'统计分析',
+//          icon: 'icon-tongjiyouhua',
+//          url: 'manageAnalysis',
+//          child: []
+//        },
+          {
+            name:'语义网管理',
+            icon: 'icon-changjinglinghuo',
+            url: 'manageOntology',
+            showChild: false,
+            child: []
+          },
+          {
+            name:'权限管理',
+            icon: 'icon-yonghuquanxian1',
+            url: 'userGroup',
+            showChild: false,
+            child: []
+          },
+//          {
+//            name:'用户信息',
+//            icon: 'icon-yonghuquanxian1',
+//            url: 'userInfo',
+//            showChild: false,
+//            child: []
+//          },
+//          {
+//            name:'系统设置',
+//            icon: 'icon-shezhi',
+//            url: 'systemSetting',
+//            showChild: false,
+//            child: []
+//          },
+          {
+            name:'操作日志',
+            icon: 'icon-caozuorizhi',
+            url: 'manageHistory',
+            showChild: false,
+            child: []
+          },{
+            name:'渠道管理',
+            icon: 'icon-shezhi',
+            url: 'manageChannel',
+            showChild: false,
+            child: []
+          }
+          ],
       }
     }
   }

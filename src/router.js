@@ -28,6 +28,10 @@ export default new Router({
             name: 'robotService',
             component: () => import('./views/console/robot/robotShow/robotService.vue'),
           },{
+            path: 'robotUserInfo',
+            name: 'robotUserInfo',
+            component: () => import('./views/console/manage/userInfo/userInfo.vue')
+          },{
             path: 'scene',
             name: 'scene',
             component: () => import('./views/console/robot/robotShow/scene.vue')
@@ -91,6 +95,10 @@ export default new Router({
             path: 'qualityAnalysis',
             name: 'qualityAnalysis',
             component: () => import('./views/common/analysis/qualityAnalysis'),
+          },{
+            path: 'hotPoint',
+            name: 'hotPoint',
+            component: ()=> import('./views/common/analysis/hotPoint')
           }]
         }]
       },{
@@ -101,6 +109,30 @@ export default new Router({
           path: 'userLimit',
           name: 'userLimit',
           component: () => import('./views/console/manage/userLimit/userLimit.vue')
+        },{
+          path: 'userGroup',
+          name: 'userGroup',
+          component: () => import('./views/console/manage/userLimit/userGroup.vue')
+        },{
+          path: 'groupDetail',
+          name: 'groupDetail',
+          component: () => import('./views/console/manage/userLimit/groupDetail.vue')
+        },{
+          path: 'newGroup',
+          name: 'newGroup',
+          component: () => import('./views/console/manage/userLimit/newGroup.vue')
+        },{
+          path: 'allUser',
+          name: 'allUser',
+          component: () => import('./views/console/manage/userLimit/allUser.vue')
+        },{
+          path: 'newGroupUser',
+          name: 'newGroupUser',
+          component: () => import('./views/console/manage/userLimit/newGroupUser.vue')
+        },{
+          path: 'userInfo',
+          name: 'userInfo',
+          component: () => import('./views/console/manage/userInfo/userInfo.vue')
         },{
           path: 'robotManage',
           name: 'robotManage',
@@ -129,6 +161,10 @@ export default new Router({
           path: 'manageHistory',
           name: 'manageHistory',
           component: () => import('./views/console/manage/manageHistory/manageHistory.vue')
+        },{
+          path: 'manageChannel',
+          name: 'manageChannel',
+          component: () => import('./views/console/manage/manageChannel/manageChannel.vue')
         }]
       }]
     },{

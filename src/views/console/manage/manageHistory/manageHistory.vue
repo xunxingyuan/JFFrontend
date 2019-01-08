@@ -14,7 +14,9 @@
             <tr class="gheader">
               <th>序号</th>
               <th>事项</th>
-              <th>分类</th>
+              <th>
+                <div class="flex">分类 <table-filter :options="filterData"></table-filter></div>
+              </th>
               <th>操作时间</th>
               <th>操作用户</th>
               <th>所属用户组</th>
@@ -40,10 +42,26 @@
 
 <script>
   import TimeRange from "../../../../components/common/timeRange.vue";
+  import TableFilter from "../../../../components/common/filter.vue";
 
   export default {
-    components: {TimeRange},
-    name: 'manageHistory'
+    components: {
+      TableFilter,
+      TimeRange},
+    name: 'manageHistory',
+    data(){
+      return {
+        filterData:[{
+          name:'全部'
+        },{
+          name:'删除'
+        },{
+          name:'新建'
+        },{
+          name:'修改'
+        }]
+      }
+    }
   }
 </script>
 

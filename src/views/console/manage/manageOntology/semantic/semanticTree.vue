@@ -3,15 +3,17 @@
     <div class="ctrl flex">
       <span>类</span>
       <div class="ctrlBtn">
-        <i class="iconfont icon-fangdajing"  @click="searchAction()"></i>
-        <i class="iconfont icon-tianjia" @click="addNode()"></i>
-        <i class="iconfont icon-bianji" @click="updateNode()"></i>
-        <i class="iconfont icon-shanchu" @click="delNode()"></i>
+        <!--<i title="导入语义网" class="iconfont icon-daoru" @click="importData"></i>-->
+        <!--<i title="导出语义网" class="iconfont icon-daoru" style="transform: rotate(180deg);display: inline-block;" @click="dialogVisible = true"></i>-->
+        <i title="搜索语义网" class="iconfont icon-fangdajing"  @click="searchAction()"></i>
+        <i title="添加语义网节点" class="iconfont icon-tianjia" @click="addNode()"></i>
+        <i title="更新语义网节点" class="iconfont icon-bianji" @click="updateNode()"></i>
+        <i title="删除语义网节点" class="iconfont icon-shanchu" @click="delNode()"></i>
 
       </div>
     </div>
-    <div style="overflow: auto;padding-left: 1rem" class="scrollbar">
-      <tree-box :treeData="treeRoot"  :config="selfConfig" :selectedItem="selectedMenu" @select="handleNodeClick"></tree-box>
+    <div style="overflow: auto;padding-left: 1rem" class="scrollbar" ref="treeScroll">
+      <tree-box :treeData="treeRoot"  :config="selfConfig" :selectedItem="selectedMenu" @select="handleNodeClick" :showAll="showALL"></tree-box>
     </div>
 
     <div class="searchNode coverBack" v-if="searchNode">
@@ -39,6 +41,59 @@
         </div>
       </div>
     </div>
+
+    <div class="addSemanticNode coverBack" v-if="addCtrl">
+      <div class="centerBox">
+        <div class="title flex">
+          <span>导入语义网</span>
+          <i class="iconfont icon-guanbi" aria-hidden="true" @click="closeCreate()"></i>
+        </div>
+        <div class="content">
+          <div class="addItem flexCenter">
+            <p>导入节点:</p>
+            <span>{{node.content}}</span>
+          </div>
+          <div class="addItem flexCenter">
+            <el-upload
+                    ref="uploadData"
+                    class="upload-demo"
+                    :data="uploadData"
+                    :auto-upload=false
+                    :on-success="uploadSuccess"
+                    :on-error = "uploadError"
+                    :action="uploadUrl"
+                    :limit=1
+                    drag
+                    multiple>
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+              <!--<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>-->
+            </el-upload>
+          </div>
+
+        </div>
+        <div class="btnGroup">
+          <el-button type="primary" @click="saveCreate()">确认</el-button>
+          <el-button @click="addCtrl = false">取消</el-button>
+        </div>
+      </div>
+    </div>
+
+    <el-dialog
+            title="选择导出类型"
+            :visible.sync="dialogVisible"
+            width="30%">
+      <div>
+        <el-select v-model="defaultType">
+          <el-option v-for="item in exportType" :label="item.label" :value="item.value" :key="item.value"></el-option>
+        </el-select>
+      </div>
+      <span slot="footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="exportData">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -60,7 +115,9 @@
         selfConfig:{
           name: 'content',
           child: 'child',
-          id: 'iri'
+          id: 'iri',
+          num: 'count',
+          numIntro: '节点数量'
         },
         searchNode: false,
         searchWord: {
@@ -68,7 +125,35 @@
           searchString: '',
           page: 1
         },
-        total: 0
+        total: 0,
+        showALL: false,
+        uploadData:{
+          ontologyId: '',
+          iri: ''
+        },
+        addCtrl: false,
+        uploadUrl: '',
+        dialogVisible: false,
+        exportType:[{
+          label: 'EXCEL',
+          value: 'xlsx'
+        },{
+          label: 'RDF/XML',
+          value: 'owl'
+        },{
+          label: 'Turtle',
+          value: 'ttl'
+        },{
+          label: 'OWL/XML',
+          value: 'owx'
+        },{
+          label: 'Manchester OWL Syntax',
+          value: 'omn'
+        },{
+          label: 'Functional OWL Syntax',
+          value: 'ofn'
+        }],
+        defaultType: 'xlsx'
       }
     },
     computed:{
@@ -130,6 +215,62 @@
             }
           })
         }
+      },
+      //导出语义网
+      exportData: function () {
+        this.dialogVisible = false
+        let url = window.location.origin + '/api/ontology/' + this.selectOntology.projectId + '/export?ontologyId=' + this.selectOntology.projectId + '&format=' + this.defaultType
+        window.open(url,'_blank')
+      },
+      //导入
+      importData: function () {
+        if(this.node === ''){
+          this.$message({
+            type: 'info',
+            message: '请选择需要导入的节点',
+            duration: 1000
+          });
+        }else{
+
+
+          this.uploadData.iri = '(' + this.node.iri + ')'
+          this.uploadData.ontologyId = this.selectOntology.projectId
+          this.uploadUrl = '/api/ontology/'+ this.selectOntology.projectId + '/import'
+          this.addCtrl = true
+        }
+      },
+      saveCreate: function () {
+
+        if(this.$refs.uploadData.uploadFiles.length!==0){
+          this.$loading()
+          this.$refs.uploadData.submit()
+        }else{
+          this.$message({
+            type: 'info',
+            message: '请选择需要导入文件',
+            duration: 1000
+          });
+        }
+      },
+      uploadError: function () {
+        this.addCtrl = false
+        this.$message({
+          type: 'error',
+          message: '上传失败，请稍后重试',
+          duration: 1000
+        });
+        this.$loading().close()
+      },
+      //上传成功
+      uploadSuccess: function () {
+        this.addCtrl = false
+        this.$message({
+          type: 'success',
+          message: '上传成功',
+          duration: 1000
+        });
+        this.handleNodeClick(this.node)
+        this.$loading().close()
       },
       //搜索节点
       searchNodeAction: function(){
@@ -257,6 +398,7 @@
                   let arr = this.treeRoot
                   this.updateToTree(arr,this.node.iri,value)
                   this.$store.commit('setOntologyTree',arr)
+                  this.handleNodeClick(this.selectOntology)
                 }
 
               })
@@ -293,6 +435,7 @@
         arr.forEach((e,index)=>{
           if(e.iri === iri){
             e.displayName = value
+	    e.content = value
           }else{
             if(e.child.length>0){
               this.updateToTree(e.child,iri,value)
@@ -303,9 +446,47 @@
       searchTreeNode: function (item) {
         this.$api.ontology.setSemanticClassTree({
           ontologyId: this.selectOntology.projectId,
-          selection: item.iri
+          selection: '('+ item.iri + ')'
         },'getNode').then((res)=>{
-
+          if(res.code==='ok'){
+            let arr = []
+            let data = res.paths
+            let result = data.reverse()
+            let record
+            let topStep = 0
+            result.forEach((e)=>{
+              if(record){
+                e.children.forEach((ele,index)=>{
+                  if(ele.iri === record.iri){
+                    topStep+= index+1
+                    ele.children = record.children
+                    ele.child = record.children
+                    ele.content = record.browserText
+                  }else {
+                    ele.content = ele.browserText
+                    ele.children = []
+                    ele.child = []
+                  }
+                })
+              }
+              record = e
+            })
+            arr.push(result[result.length -1])
+            arr.forEach((e)=>{
+              e.content = e.browserText
+              e.child = e.children
+            })
+            let choseOne = result[0]
+            choseOne.content = choseOne.browserText
+            choseOne.child = choseOne.children
+            this.searchNode = false
+            this.$store.commit('setOntologyTree',arr)
+            this.showALL = true
+            this.handleNodeClick(choseOne)
+            setTimeout(()=>{
+              this.$refs.treeScroll.scrollTop = topStep*16*2
+            },1000)
+          }
         })
       }
     },
@@ -342,7 +523,7 @@
         text-align: right;
         margin-right: 0.5rem;
         i{
-          margin: 0 0.5rem;
+          margin: 0 0.3rem;
           cursor: pointer;
         }
         i:hover{
@@ -410,6 +591,28 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
+          }
+        }
+      }
+    }
+    .addSemanticNode{
+      .centerBox{
+        height: 30rem;
+        .content{
+          .addItem{
+            margin-bottom: 1.5rem;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            p{
+              width: 60px;
+              min-width: 60px;
+              font-size: 0.8rem;
+              text-align: right;
+              margin-right: 30px;
+
+            }
           }
         }
       }

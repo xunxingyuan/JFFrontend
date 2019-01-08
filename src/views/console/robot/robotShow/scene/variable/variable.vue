@@ -29,7 +29,7 @@
               <th>变量名</th>
               <th>适用范围</th>
               <th>变量说明</th>
-              <th>操作</th>
+              <th width="200">操作</th>
             </tr>
             <tr v-for="data in varLists" :class="{'active': data.variableName===choseVar.variableName}">
               <td width="200" style="color: #2B86F6">{{data.variableName}}</td>
@@ -44,7 +44,7 @@
                 <span class="copy variable" @click="copy()" :data-clipboard-text="'${'+ data.variableName + '}'">复制</span>
                 <span class="del" @click.stop="deleteVar(data)">删除</span>
                 <span class="edit" @click.stop="createVar('edit',data)" style="color: #666">编辑</span>
-                <span class="del" @click.stop="editVar(data)">表达式</span>
+                <span class="del" v-if="data.variableType===0||data.variableType===1" @click.stop="editVar(data)">表达式</span>
               </td>
 
             </tr>
@@ -107,7 +107,7 @@
       //获取变量列表
       getVarListData: function (type) {
         if(this.selectSceneId){
-          return this.$api.getVariable({
+          return this.$api.scene.variable.getVariable({
             scenesId: this.selectSceneId,
             source: type
           })

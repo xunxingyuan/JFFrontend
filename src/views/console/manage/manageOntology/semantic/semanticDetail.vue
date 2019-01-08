@@ -5,7 +5,7 @@
         <span>与类相关的实例</span>
         <div class="ctrlBtn">
           <i class="iconfont icon-tianjia" aria-hidden="true" @click="addInstance"></i>
-          <i class="iconfont icon-shanchu" aria-hidden="true"></i>
+          <i class="iconfont icon-shanchu" aria-hidden="true" @click="deleteDetailData"></i>
         </div>
       </div>
       <div class="list">
@@ -81,7 +81,7 @@
         }).then(({ value }) => {
           this.$api.ontology.setSemanticInstance({
             ontologyId: this.selectOntology.projectId,
-            selection: this.node.iri,
+            selection: '('+ this.node.iri+ ')',
             instanceName: value
           },'create').then((res)=>{
             if(res.code === 'ok'){
@@ -97,7 +97,7 @@
         this.instanceName = item.browserText
         this.$api.ontology.setSemanticInstance({
           ontologyId: this.selectOntology.projectId,
-          selection: item.iri,
+          selection: "(" + item.iri + ')',
         },'getDetail').then((res)=>{
           if(res.code === 'ok'){
 
@@ -110,11 +110,12 @@
       submitChange: function () {
         this.selectInstance.synonyms = this.sameWordList
         this.selectInstance.userSynonyms = this.nearWordList
+        this.selectInstance.subject.browserText = this.instanceName
         let data = {
           instanceName: this.instanceName,
           frame: JSON.stringify(this.selectInstance),
           ontologyId: this.selectOntology.projectId,
-          selection: this.choseItem.iri
+          selection: '(' + this.choseItem.iri + ')'
         }
         this.$api.ontology.setSemanticInstance(data,'update').then((res)=>{
           if(res.code === 'ok'){
@@ -123,6 +124,11 @@
               message: '更新成功',
               duration: 1000
             });
+            this.selectList.forEach(e=>{
+              if(e.iri === this.choseItem.iri){
+                e.browserText = this.instanceName
+              }
+            })
           }else{
             this.$message({
               type: 'error',
@@ -135,8 +141,56 @@
       refreshData: function () {
         this.getDetailData(this.choseItem)
       },
-      deleteDetailDada: function(item){
-
+      deleteDetailData: function(){
+        if(this.choseItem){
+          this.$confirm('此操作将永久删除该实例, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(()=>{
+            this.$api.ontology.setSemanticInstance({
+              ontologyId: this.selectOntology.projectId,
+              selection: "(" + this.choseItem.iri + ')',
+            },'delete').then((res)=>{
+              if(res.code === 'ok'){
+                this.$message({
+                  type: 'success',
+                  message: '删除成功',
+                  duration: 1000
+                });
+                this.selectInstance = {
+                  subject:{
+                    iri: '',
+                    browserText: ''
+                  },
+                  synonyms: [],
+                  types: [],
+                  userSynonyms: []
+                }
+                this.$api.ontology.setSemanticInstance({
+                  ontologyId: this.selectOntology.projectId,
+                  selection: '('+this.node.iri+')'
+                },'get').then((res)=>{
+                  if(res.code==='ok'){
+                    this.$store.dispatch('setSelectedClassInstance',res.individuals)
+                  }
+                })
+              }else{
+                this.$message({
+                  type: 'error',
+                  message: res.msg,
+                  duration: 1000
+                });
+              }
+            })
+          })
+        }else{
+          this.$message({
+            type: 'info',
+            message: '请选择要删除的实例',
+            duration: 1000
+          });
+        }
       },
       setSameList: function (item) {
         this.sameWordList = item
@@ -147,6 +201,19 @@
     },
     mounted(){
 
+    },
+    watch: {
+      'node': function () {
+        this.selectInstance = {
+          subject:{
+            iri: '',
+            browserText: ''
+          },
+          synonyms: [],
+          types: [],
+          userSynonyms: []
+        }
+      }
     }
   }
 </script>

@@ -18,13 +18,15 @@ service.interceptors.request.use(
     // if (store.getters.token) {
     //   config.headers['X-Token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     // }
-    loadingInstance = Loading.service({ fullscreen: true });
+    if(config.method!=='get'){
+      loadingInstance = Loading.service({ fullscreen: true });
+    }
     return config
   },
   error => {
     // Do something with request error
     console.log(error) // for debug
-    loadingInstance.close()
+    // loadingInstance.close()
     Promise.reject(error)
   }
 )
@@ -64,6 +66,8 @@ service.interceptors.response.use(
     //   return response.data
     // }
     if(res.status === 20001){
+      window.sessionStorage.removeItem('user')
+      window.sessionStorage.removeItem('robotId')
       Message({
         message: res.msg,
         type: 'error',
@@ -73,12 +77,16 @@ service.interceptors.response.use(
         name: 'login'
       })
     }
-    loadingInstance.close()
+    if(loadingInstance){
+      loadingInstance.close()
+    }
     return response.data
   },
   error => {
     console.log('err' + error) // for debug
-    loadingInstance.close()
+    if(loadingInstance){
+      loadingInstance.close()
+    }
     Message({
       message: error.msg,
       type: 'error',

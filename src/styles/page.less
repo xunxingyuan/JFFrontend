@@ -111,10 +111,19 @@
   }
 }
 
+//文本超出省略
+.textOver{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  white-space:nowrap;
+}
+
 //通用表格
 .gtable{
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
   tr{
     th{
       color: #666;
@@ -131,9 +140,14 @@
       height: 3rem;
       border-bottom: solid 1px #ddd;
       padding-left: 1rem;
+      padding-right: 1rem;
     }
     .ctrl{
       color: #666;
+      .view{
+        color: @blue;
+        margin-right: 1rem;
+      }
       .edit,.ctrl,.copy{
         color: @blue;
       }
@@ -149,6 +163,15 @@
       .copy:hover{
         color: orange;
       }
+    }
+    .text{
+      width: 100%;
+      height: 3rem;
+      line-height: 3rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-all;
+      white-space:nowrap;
     }
   }
   tr:hover{
@@ -349,9 +372,10 @@
         .inputItem{
           margin-right: 2rem;
         }
-        input{
-          background: #f5f5f5;
-        }
+      }
+      .tips{
+        font-size: 14px;
+        color: #666;
       }
     }
   }
@@ -373,6 +397,7 @@
 
         .innerTitle{
           height: 3rem;
+          min-height: auto;
           background: #F8F8F8;
           border-top: solid 1px #ddd;
           border-bottom: solid 1px #ddd;
@@ -390,6 +415,7 @@
         .innerContent{
           flex: 1;
           font-size: 14px;
+          overflow: auto;
           .treeBox{
             padding-left: 1rem;
           }
@@ -404,6 +430,7 @@
         flex-flow: column;
         padding: 1rem;
         overflow: auto;
+        position: relative;
 
         .rightTop{
           min-height: 2rem;
@@ -442,6 +469,29 @@
               color: #666;
               font-size: 14px;
             }
+            .filterBox{
+              min-height: 3rem;
+              width: 100%;
+              border: solid 1px #ddd;
+              display: flex;
+              align-items: flex-start;
+              flex-flow: column;
+              flex-wrap: wrap;
+              padding: 10px 1rem 0 1rem;
+              font-size: 12px;
+              .filterItem{
+                margin-right: 10px;
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                .itemName{
+                  margin-right: 10px;
+                  width: 3rem;
+                  text-align: right;
+                }
+              }
+            }
+
           }
           .aimlContain{
             display: flex;
@@ -490,6 +540,11 @@
               span{
                 font-size: 14px;
                 color: #333;
+                width: 70%;
+                overflow: hidden;
+                word-break: break-all;
+                text-overflow: ellipsis;
+                white-space:nowrap;
               }
             }
             .aimlBox:hover{
@@ -513,6 +568,36 @@
       }
       .aimlBox{
         padding-bottom: 0;
+      }
+      .rightTools{
+        position: absolute;
+        height: 4rem;
+        width: 100%;
+        top: 0;
+        left: 0;
+        display: flex;
+        padding: 8px;
+        .toolsBox{
+          width: 100%;
+          height: 100%;
+          border: solid 1px #ddd;
+          background: #fff;
+          box-shadow: 0 0 3px  #dedede;
+          display: flex;
+          align-items: center;
+          padding: 0 1rem;
+          .toolsItem{
+            font-size: 14px;
+            display: inline-block;
+            height: 2rem;
+            line-height: 2rem;
+            padding: 0 1rem;
+            border: solid 1px #2B86F6;
+            margin-left: -1px;
+            color: #2B86F6;
+            cursor: pointer;
+          }
+        }
       }
     }
   }
@@ -860,8 +945,8 @@
 
 //顶部管理
 .robotTop{;
-  height: 4rem;
-  min-height: 4rem;
+  height: 3.5rem;
+  min-height: 3.5rem;
   /*background-color: @blue;*/
   background:linear-gradient(90deg,#2B86F6,#008ff8);
   box-shadow:1rem 0 8rem rgba(187,187,187,0.31);
@@ -884,13 +969,15 @@
     padding-left: 2rem;
     height: 100%;
     .robotItem{
-      height: 3rem;
+      height: 2.5rem;
       width: 8rem;
       min-width: 8rem;
-      line-height: 3rem;
+      line-height: 2.5rem;
       text-align: center;
       color: #fff;
       cursor: pointer;
+      background: #24589B;
+      margin-left: 1rem;
       p{
         width: 5rem;
         overflow: hidden;
@@ -908,7 +995,7 @@
         background: @green;
       }
       .close{
-        background: @red;
+        background: linear-gradient(to bottom,#D7D7D7,#707070)
       }
     }
     .active{
@@ -916,6 +1003,9 @@
       color: #333;
       border-top-right-radius: 2px;
       border-top-left-radius: 2px;
+      height: 3rem;
+      line-height: 3rem;
+      margin-bottom: 0;
     }
     .addRobot{
       width: 7rem;
@@ -943,6 +1033,11 @@
       height: 45px;
       overflow: hidden;
       border-radius: 22.5px;
+      img{
+        width: 45px;
+        height: 45px;
+        border-radius: 22.5px;
+      }
     }
     .userInfo{
       display: flex;
@@ -952,7 +1047,7 @@
       width: auto;
       span{
         width: auto;
-        max-width: 4rem;
+        max-width: 6rem;
         height: 2rem;
         line-height: 2rem;
         overflow: hidden;
@@ -968,7 +1063,7 @@
         display: none;
         position: absolute;
         right: 0;
-        top: 4rem;
+        top: 3.5rem;
         background: #fff;
         color: #333;
         z-index: 10;
@@ -1167,5 +1262,217 @@
     height: 100%;
     border: solid 1px #ddd;
     margin-left: -1px;
+  }
+}
+
+
+//相似问题编辑框
+.sameView{
+  width: 40rem;
+  background: #fff;
+  height: 30rem;
+  z-index: 10;
+  margin-right: 10px;
+  align-self: center;
+  border-radius: 2px;
+  overflow: hidden;
+  .title{
+    height: 3rem;
+    min-height: 3rem;
+    background: #f3f3f3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+  }
+  .content{
+    height: 27rem;
+    flex: 1;
+    padding: 1rem 2rem;
+    display: flex;
+    flex-flow: column;
+    font-size: 0.9rem;
+    .topContent{
+      height: 3rem;
+      min-height: 3rem;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: solid 1px #ddd;
+      p{
+        width: 50%;
+        min-width: 50%;
+        text-align: left;
+        padding-left: 1rem;
+        color: #000;
+        font-weight: 600;
+        span{
+          color: #666;
+          font-weight: 500;
+        }
+      }
+    }
+    .midContent{
+      flex: 1;
+      overflow: auto;
+      .sameItem{
+        font-size: 12px;
+        height: 3rem;
+        border-bottom: solid 1px #ddd;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between;
+        p{
+          height: 1.5rem;
+          line-height: 1.5rem;
+          overflow: hidden;
+          text-align: left;
+          padding-left: 1rem;
+        }
+        .ctrl{
+          width: 6rem;
+          min-width: 6rem;
+        }
+        .text{
+          flex: 1;
+        }
+      }
+      .sameItem:hover{
+        background: #F2F6FA;
+      }
+    }
+  }
+}
+
+//标签页
+.tagContainBox{
+  display: flex;
+  flex-flow: column;
+  background: #fff;
+  border: solid 1px #ddd;
+  padding: 0;
+  .tagItem{
+    height: 3rem;
+    overflow: auto;
+    background: #f5f5f5;
+    display: flex;
+    position: relative;
+    span{
+      line-height: 3rem;
+      width: 7rem;
+      text-align: center;
+      border-right: solid 1px #ddd;
+      cursor: pointer;
+    }
+    span:hover{
+      color: @blue;
+    }
+    .active{
+      background: #fff;
+      margin-top: 1px;
+      z-index: 5;
+    }
+    .tagBottomLine{
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background: #ddd;
+      bottom: 0;
+      left: 0;
+    }
+  }
+  .tagContain{
+    padding: 1rem;
+    text-align: left;
+    color: #333;
+    flex: 1;
+    overflow: auto;
+  }
+}
+
+//用户用户组增加栏目
+.addItemCommon{
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  min-height: 2rem;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  p{
+    width: 6rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    min-width: 6rem;
+    text-align: right;
+    padding-right: 1rem;
+    i{
+      color: #FF0000;
+    }
+  }
+  .itemContent{
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    flex-flow: column;
+    .warning{
+      font-size: 0.7rem;
+      color: #FF0000;
+      margin: 0 0.5rem;
+    }
+    .tips{
+      font-size: 0.7rem;
+      color: #999;
+    }
+  }
+  .time{
+    flex-flow: row;
+    align-items: center;
+    .el-radio-group{
+      display: flex;
+      .el-radio{
+        margin-left: 10px;
+      }
+    }
+    .el-input__inner{
+      width: 230px;
+      margin-left: 10px;
+      .el-range-separator{
+        min-width: 25px;
+      }
+    }
+  }
+}
+
+//新建用户和用户组
+.newGroupAndUser{
+  .bottom{
+    padding: 0 1rem;
+    .content{
+      background: #fff;
+      padding: 1rem;
+      overflow: auto;
+      .msgPart{
+        width: 100%;
+        .intro{
+          text-align: left;
+          margin-bottom: 1rem;
+        }
+        .formItem{
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+          min-height: 40px;
+          .itemName{
+            width: 10rem;
+            text-align: right;
+            margin-right: 10px;
+          }
+          .itemContent{
+            width: 300px;
+          }
+        }
+
+      }
+    }
   }
 }

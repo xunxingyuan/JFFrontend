@@ -63,16 +63,16 @@
         }],
         radio: '',
         options: [{
-          value: 4,
+          value: 3,
           label: '文本框'
         },{
-          value: 5,
+          value: 4,
           label: '时间'
         },{
-          value: 6,
+          value: 5,
           label: '地址录入'
         }],
-        inputType: 4
+        inputType: 3
       }
     },
     computed:{
@@ -90,7 +90,7 @@
       //编辑条件
       saveChange: function () {
         let _self = this
-        if (this.question.nodeType === 4||this.question.nodeType === 5||this.question.nodeType === 6) {
+        if (this.question.nodeType === 3||this.question.nodeType === 4||this.question.nodeType === 5) {
           let reqData = {
             nodeId: this.question.nodeId,
             sceneId: this.question.sceneId,
@@ -139,9 +139,9 @@
       //修改子元素父节点
       changeFatherNode: function (item,pid) {
         let data = {
-          reactId: item.reactId,
-          scenesId: item.scenesId,
-          reactPid: pid,
+          nodeId: item.nodeId,
+          sceneId: item.sceneId,
+          nodePid: pid,
           content: item.content,
           jumpTo: item.jumpTo,
           reactType: 0
@@ -181,7 +181,7 @@
         this.jumpText = ''
         this.searchQuestion = ''
         if(this.question&&this.question.nodeType === 0){
-          this.inputType = 4
+          this.inputType = 3
         }else if(this.question.nodeType){
           this.inputType = this.question.nodeType
         }

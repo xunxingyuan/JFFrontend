@@ -1,11 +1,14 @@
 <template>
   <div class="timeRange">
-    <span v-for="item in timeList" :class="{'active': selectTime === item.id}" @click="selectTime = item.id">{{item.name}}</span>
+    <span v-for="item in timeList" :class="{'active': selectTime === item.id}" @click="choseTime(item)">{{item.name}}</span>
     <el-date-picker
             v-if="selectTime=== 5"
+            size="small"
             class="timeArr"
             v-model="timeData"
+            value-format="timestamp"
             type="datetimerange"
+            @change="selfTime"
             start-placeholder="开始日期"
             end-placeholder="结束日期">
     </el-date-picker>
@@ -35,6 +38,41 @@
         }],
         selectTime: 1,
         timeData: []
+      }
+    },
+    methods:{
+      choseTime: function (item) {
+        this.selectTime = item.id
+        let now = new Date()
+        let date = new Date()
+        date.setHours(0,0,0)
+        this.timeData = []
+        switch(item.id){
+          case 1:
+            this.timeData.push(date.getTime())
+            this.timeData.push(now.getTime())
+            break;
+          case 2:
+            this.timeData.push(date.getTime()-24*60*60*1000)
+            this.timeData.push(date.getTime())
+            break;
+          case 3:
+            this.timeData.push(date.getTime()-6*24*60*60*1000)
+            this.timeData.push(now.getTime())
+            break
+          case 4:
+            this.timeData.push(date.getTime()-29*24*60*60*1000)
+            this.timeData.push(now.getTime())
+            break
+          case 5:
+            break;
+          default:
+            break;
+        }
+        this.$emit('choseTime',this.timeData)
+      },
+      selfTime: function () {
+        this.$emit('choseTime',this.timeData)
       }
     }
   }

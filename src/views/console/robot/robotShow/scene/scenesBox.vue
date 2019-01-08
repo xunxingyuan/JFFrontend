@@ -8,21 +8,21 @@
       </div>
       <!--右上角按钮-->
       <div class="refreshIcon">
-          <span class="flex" :class="{'active': questionTree&&(questionTree.rollback!== 0)}" @click="rollbackNodeChange()">
-            <i class="fa icons_redo_edit" aria-hidden="true"></i><p>撤销</p>
-          </span>
-        <span class="flex add" :class="{'active': true}">
+          <!--<span class="flex" :class="{'active': questionTree&&(questionTree.rollback!== 0)}" @click="rollbackNodeChange()">-->
+            <!--<i class="fa icons_redo_edit" aria-hidden="true"></i><p>撤销</p>-->
+          <!--</span>-->
+        <span v-if="userLimit.edit" class="flex add" :class="{'active': true}">
               <i class="fa icons_add_edit" aria-hidden="true"></i>
               <p>添加</p>
               <div class="addFirst">
-                <div class="addItem active">
-                  <p>上级插入</p>
-                  <div class="addSecond">
-                    <div class="addItem" @click="addBeforeNode('before')" :class="{'active': nodeCtrl.add.beforeQuestion}">
-                      <p>追问</p>
-                    </div>
-                  </div>
-                </div>
+                <!--<div class="addItem active">-->
+                  <!--<p>上级插入</p>-->
+                  <!--<div class="addSecond">-->
+                    <!--<div class="addItem" @click="addBeforeNode('before')" :class="{'active': nodeCtrl.add.beforeQuestion}">-->
+                      <!--<p>追问</p>-->
+                    <!--</div>-->
+                  <!--</div>-->
+                <!--</div>-->
                 <div class="addItem active">
                   <p>下级插入</p>
                   <div class="addSecond">
@@ -68,49 +68,51 @@
                         </div>
                       </div>
                     </div>
-                    <div v-if="checkSameLevel('result')" class="addItem active" @click="addNodeSame()">
-                      <p>结果</p>
-                    </div>
+                    <!--<div v-if="checkSameLevel('result')" class="addItem active" @click="addNodeSame()">-->
+                      <!--<p>结果</p>-->
+                    <!--</div>-->
                   </div>
                 </div>
               </div>
             </span>
-        <span class="flex add" style="margin-right: 1rem" :class="{'active': nodeCtrl.jump}">
+        <span v-if="userLimit.edit" class="flex add" style="margin-right: 1rem" :class="{'active': nodeCtrl.jump}">
               <i class="fa icons_jump_edit" aria-hidden="true"></i><p>跳转</p>
               <div class="addFirst">
                 <div class="addItem" :class="{'active': nodeCtrl.add.jumpNode}" @click="jumpQuestionNode()">
-                  <p>其他追问</p>
+                  <p>其他追问/回答</p>
                 </div>
                 <div class="addItem" :class="{'active': nodeCtrl.add.jumpScenes}" @click="jumpOtherScenes()">
                   <p>其他场景</p>
                 </div>
               </div>
             </span>
-        <span class="flex" @click="viewNode()" :class="{'active': nodeCtrl.edit}">
+        <span v-if="userLimit.edit" class="flex" @click="viewNode()" :class="{'active': nodeCtrl.edit}">
               <i class="fa icons_edit_edit" aria-hidden="true"></i><p>编辑</p>
             </span>
-        <span class="flex" :class="{'active': nodeCtrl.copy}" @click="copyNode()">
+        <span v-if="userLimit.edit" class="flex" :class="{'active': nodeCtrl.copy}" @click="copyNode()">
               <i class="fa icons_copy_edit" aria-hidden="true"></i><p>复制</p>
             </span>
-        <span class="flex" :class="{'active': nodeCtrl.paste}" @click="parseNode()">
+        <span v-if="userLimit.edit" class="flex" :class="{'active': nodeCtrl.paste}" @click="parseNode()">
               <i class="fa icons_paste_edit" aria-hidden="true"></i><p>粘贴</p>
             </span>
-        <span class="flex" :class="{'active': nodeCtrl.moveUp}" @click="nodeMove('up')">
-              <i class="fa fa-arrow-up" aria-hidden="true"></i><p>上移</p>
-            </span>
-        <span class="flex" :class="{'active': nodeCtrl.moveDown}" @click="nodeMove('down')">
-              <i class="fa fa-arrow-down" aria-hidden="true"></i><p>下移</p>
-            </span>
-        <span class="flex" :class="{'active': nodeCtrl.move}" @click="moveNode()">
+        <!--<span class="flex" :class="{'active': nodeCtrl.moveUp}" @click="nodeMove('up')">-->
+              <!--<i class="fa fa-arrow-up" aria-hidden="true"></i><p>上移</p>-->
+            <!--</span>-->
+        <!--<span class="flex" :class="{'active': nodeCtrl.moveDown}" @click="nodeMove('down')">-->
+              <!--<i class="fa fa-arrow-down" aria-hidden="true"></i><p>下移</p>-->
+            <!--</span>-->
+        <span v-if="userLimit.edit" class="flex" :class="{'active': nodeCtrl.move}" @click="moveNode()">
               <i class="fa icons_move_edit" aria-hidden="true"></i><p>移动</p>
             </span>
-        <div class="exchange">
-          <p v-if="treeUpdateStatus&&exchangePercent===0" class="start" @click="commitScenesData()"><i class="fa icons_tips_edit"></i>未同步数据,开始同步</p>
-          <div v-if="treeUpdateStatus&&exchangePercent!==0" class="exchangeStatus" >
-            <el-progress :percentage="exchangePercent" color="#8e71c7"></el-progress>
-          </div>
-          <p v-if="!treeUpdateStatus" class="result"><i class="fa icons_finish_edit"></i>已完成同步</p>
-        </div>
+        <span v-if="userLimit.edit" @click="releaseScene" class="active" style="margin-left: 1rem;color: #2B86F6;border: solid 1px #2B86F6;">同步场景</span>
+
+        <!--<div class="exchange">-->
+          <!--<p v-if="treeUpdateStatus&&exchangePercent===0" class="start" @click="commitScenesData()"><i class="fa icons_tips_edit"></i>未同步数据,开始同步</p>-->
+          <!--<div v-if="treeUpdateStatus&&exchangePercent!==0" class="exchangeStatus" >-->
+            <!--<el-progress :percentage="exchangePercent" color="#8e71c7"></el-progress>-->
+          <!--</div>-->
+          <!--<p v-if="!treeUpdateStatus" class="result"><i class="fa icons_finish_edit"></i>已完成同步</p>-->
+        <!--</div>-->
       </div>
     </div>
     <!--缩略图控制-->
@@ -152,14 +154,14 @@
               </div>
             </div>
           </div>
-          <div v-if="questionTree!==null" class="lineBox">
+          <div v-if="questionTree!==null&&questionTree.question" class="lineBox">
             <div class="line"></div>
             <div class="coverRight"></div>
           </div>
-          <span class="addCtrlIcon icons_add fa" v-if="questionTree!==null&&questionTree.hasOwnProperty('nodes')&&(questionTree.nodes===null||questionTree.nodes.length===0)" @click="showAddBox()"></span>
+          <span class="addCtrlIcon icons_add fa" v-if="userLimit.edit&&questionTree!==null&&questionTree.question&&questionTree.hasOwnProperty('nodes')&&(questionTree.nodes===null||questionTree.nodes.length===0)" @click="showAddBox()"></span>
         </div>
-        <div v-if="questionTree!==null&&questionTree.nodes&&questionTree.nodes!==null&&questionTree.nodes.length !== 0" style="padding-right: 1rem">
-          <node-box :nodeData="questionTree.nodes"></node-box>
+        <div v-if="questionTree!==null&&questionTree.nodes&&questionTree.nodes!==null&&questionTree.question&&questionTree.nodes.length !== 0" style="padding-right: 1rem">
+          <node-box :nodeData="questionTree.nodes" :userLimit="userLimit"></node-box>
         </div>
       </div>
       <svg class="lineDrawNew" v-for="item in DrawData" :width="item.width" :height="item.height" :style="{top: item.top+'px',left: item.left+'px'}" :class="item.location">
@@ -174,12 +176,12 @@
     </div>
     <!--弹出框内容-->
     <section style="z-index: 10001">
-      <question-begin></question-begin>
+      <question-begin :userLimit="userLimit"></question-begin>
       <question-edit></question-edit>
       <question-add-box></question-add-box>
       <question-content></question-content>
       <question-inquiry></question-inquiry>
-      <!--<question-jump-scenes></question-jump-scenes>-->
+      <question-jump-scenes></question-jump-scenes>
       <question-node-show></question-node-show>
       <question-edit-input></question-edit-input>
       <question-edit-duo></question-edit-duo>
@@ -194,7 +196,7 @@
   import questionAddBox from './questionAddBox.vue'
   import questionInquiry from './questionInquiry.vue'
   import questionSetting from './questionSetting.vue'
-//  import questionJumpScenes from './questionJumpScenes.vue'
+  import questionJumpScenes from './questionJumpScenes.vue'
   import QuestionNodeShow from "./questionNodeShow.vue";
   import QuestionEditInput from "./questionEditInput.vue";
   import QuestionEditDuo from "./questionEditDuo.vue";
@@ -208,7 +210,7 @@
 
   export default {
     name: 'scenesBox',
-    props:['scenes'],
+    props:['scenes','userLimit'],
     data(){
       return {
         selectedScenes: '',
@@ -290,6 +292,7 @@
       }
     },
     components:{
+      questionJumpScenes,
       QuestionEditDuo,
       QuestionEditInput,
       QuestionNodeShow,
@@ -298,7 +301,6 @@
       questionEdit,
       questionAddBox,
       questionInquiry,
-//      questionJumpScenes,
       nodeBox
     },
     computed:{
@@ -328,6 +330,7 @@
     methods:{
       //查看场景
       viewScenesData: function (data) {
+        this.$store.dispatch('getGlobalVarList')
         let dragDom = this.$refs.dragWrapper
         dragDom.scrollLeft = 0
         dragDom.scrollTop = 0
@@ -385,7 +388,7 @@
           this.$store.dispatch('setQuestionEdit',{
             type: 'content'
           })
-        }else if(this.question.nodeType===1||this.question.nodeType===2){
+        }else if(this.question.nodeType===1){
           this.$store.dispatch('setQuestionEdit',{
             type: 'change'
           })
@@ -393,11 +396,11 @@
           this.$store.dispatch('setQuestionEdit',{
             type: 'inquiry'
           })
-        }else if(this.question.nodeType===3){
+        }else if(this.question.nodeType===2){
           this.$store.dispatch('setQuestionEdit',{
             type: 'changeDuo'
           })
-        }else if(this.question.nodeType===4||this.question.nodeType===5||this.question.nodeType===6){
+        }else if(this.question.nodeType===3||this.question.nodeType===4||this.question.nodeType===5){
           this.$store.dispatch('setQuestionEdit',{
             type: 'changeInput'
           })
@@ -406,15 +409,16 @@
       //新增同级节点
       addNodeSame: function () {
         this.$store.dispatch('setAddQuestionLevel','same')
-        if(this.question.answer!==null){
-          this.$store.dispatch('setQuestionEdit',{
-            type: 'content'
-          })
-        }else if(this.question.nodeType===0){
+//        if(this.question.answer!==null){
+//          this.$store.dispatch('setQuestionEdit',{
+//            type: 'content'
+//          })
+//        }else
+        if(this.question.nodeType===0){
           this.$store.dispatch('setQuestionEdit',{
             type: 'add'
           })
-        }else if(this.question.nodeType===1||this.question.nodeType===2){
+        }else if(this.question.nodeType===1){
           if(this.nodeCtrl.add.condition){
             this.$store.dispatch('setQuestionEdit',{
               type: 'change'
@@ -478,11 +482,11 @@
       copyNode: function () {
         //判断复制节点类型
         let type
-        if(this.question.hasOwnProperty('answer')){
+        if(this.question.hasOwnProperty('answerId')){
           type = 'answer'
         }else if(this.question.nodeType === 0){
           type = 'question'
-        }else if(this.question.nodeType === 1){
+        }else if(this.question.nodeType === 1||this.question.nodeType === 2||this.question.nodeType === 3||this.question.nodeType === 4){
           type = 'condition'
         }else{
           type = 'none'
@@ -496,22 +500,16 @@
           message: '复制成功!',
           duration: 1000
         });
+        this.typeCheck()
       },
       //粘贴节点数据
       parseNode: function () {
         if(this.nodeCtrl.paste){
           if(this.copyNodeData.type === 'answer'){
             let arr = []
-            if(this.question.hasOwnProperty('answer')){
-              arr.push(this.question.reactPid)
-            }else{
-              arr.push(this.question.reactId)
-            }
             let data = {
-              reactId: this.question.reactId,
-              answer: this.copyNodeData.data.answer,
-              conditions: JSON.stringify(arr),
-              opinion: this.copyNodeData.data.opinion
+              nodeId: this.question.nodeId,
+              content: this.copyNodeData.data.content,
             }
             this.$api.scene.editor.addQuestionNodeAnswer(data).then((res)=>{
               this.$store.dispatch('updateQuestionTree')
@@ -520,23 +518,93 @@
                 type: 'success',
                 duration: 1000
               });
+              this.typeCheck()
             })
           }else{
-            let data={
-              copyReactId: this.copyNodeData.data.reactId,
-              toReactId: this.question.reactId,
-              toScenesId: this.localScenes.scenesId
-            }
-            this.$api.scene.editor.parseNode(data).then((res)=>{
-              if(res.code === 'ok'){
-                this.$message({
-                  message: '新增成功',
-                  type: 'success',
-                  duration: 1000
-                });
-                this.$store.dispatch('updateQuestionTree')
+            if(this.copyNodeData.data.nodeType=== 0){
+              let data = {
+                sceneId: this.copyNodeData.data.sceneId,
+                nodePid: this.question.nodeId,
+                content: this.copyNodeData.data.content,
+                nodeType: this.copyNodeData.data.nodeType,
+                variableType: '',
+                variableName: '',
+                variableId: ''
               }
-            })
+              this.$api.scene.editor.addQuestionNode(data).then((res)=>{
+                if(res.code === 'ok'){
+                  this.$store.dispatch('updateQuestionTree')
+                  this.$message({
+                    message: '新增成功',
+                    type: 'success',
+                    duration: 1000
+                  });
+                  this.typeCheck()
+                }else{
+                  this.$message({
+                    message: res.msg,
+                    type: 'info',
+                    duration: 1000
+                  });
+                }
+              })
+            }else{
+              if(this.copyNodeData.data.nodeType === 1){
+                let data = {
+                  sceneId: this.copyNodeData.data.sceneId,
+                  nodePid: this.question.nodeId,
+                  content: this.copyNodeData.data.content,
+                  nodeType: this.copyNodeData.data.nodeType,
+                  jumpTo: this.copyNodeData.data.jumpTo,
+                  similarQuestionList: JSON.stringify(this.copyNodeData.data.similarQuestionList),
+                  slotList: JSON.stringify(this.copyNodeData.data.slotList),
+                  showFlag: this.copyNodeData.data.showFlag
+                }
+                this.$api.scene.editor.addSoloNode(data).then((res)=>{
+                  if(res.code === 'ok'){
+                    this.$store.dispatch('updateQuestionTree')
+                    this.$message({
+                      message: '新增成功',
+                      type: 'success',
+                      duration: 1000
+                    });
+                    this.typeCheck()
+                  }else{
+                    this.$message({
+                      message: res.msg,
+                      type: 'info',
+                      duration: 1000
+                    });
+                  }
+
+                })
+              }else{
+                let data = {
+                  sceneId: this.copyNodeData.data.sceneId,
+                  nodePid: this.question.nodeId,
+                  content: this.copyNodeData.data.content,
+                  nodeType: this.copyNodeData.data.nodeType,
+                  jumpTo: this.copyNodeData.data.jumpTo
+                }
+                this.$api.scene.editor.addDuoNode(data).then((res)=>{
+                  if(res.code === 'ok'){
+                    this.$store.dispatch('updateQuestionTree')
+                    this.$message({
+                      message: '新增成功',
+                      type: 'success',
+                      duration: 1000
+                    });
+                    this.typeCheck()
+                  }else{
+                    this.$message({
+                      message: res.msg,
+                      type: 'info',
+                      duration: 1000
+                    });
+                  }
+                })
+              }
+            }
           }
         }
       },
@@ -548,7 +616,7 @@
             this.$store.dispatch('setConditionFlag',{
               flag: 'move',
             })
-          }else if(this.question.nodeType === 1){
+          }else if(this.question.nodeType === 1||this.question.nodeType === 2||this.question.nodeType === 3||this.question.nodeType === 4||this.question.nodeType === 5||this.question.nodeType === 6){
             this.$store.dispatch('choseMoveConditionSelect')
             this.$store.dispatch('setConditionFlag',{
               flag: 'move',
@@ -656,10 +724,38 @@
           })
         }
       },
+      //发布场景
+      releaseScene: function () {
+        let _self=this
+        _self.$confirm('此操作将同步该场景内容, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(()=>{
+          this.$api.scene.scene.releaseScene({
+            sceneId: this.localScenes.sceneId,
+            robotId: window.sessionStorage.getItem('robotId')
+          }).then((res)=>{
+            if(res.code === 'ok'){
+              this.$message({
+                type: 'success',
+                message: '同步成功',
+                duration: 1000
+              });
+            }else{
+              this.$message({
+                type: 'error',
+                message: res.msg,
+                duration: 1000
+              });
+            }
+          })
+        })
+      },
       //检查当前节点
       checkSameLevel: function (type) {
         if(this.question){
-          if(this.question.answer!==null){
+          if(this.question.hasOwnProperty('answerId')){
             return type === 'result'
           }else if(this.question.nodeType === 1||this.question.nodeType === 2||this.question.nodeType === 3||this.question.nodeType === 4||this.question.nodeType === 5||this.question.nodeType === 6){
             return type === 'condition'
@@ -811,38 +907,22 @@
             type: 'content'
           })
         }else if(this.ifChangeCondition === 'move'){
-          let data
-          let Pid
-          if(this.question.nodeType === 1||this.question.nodeType === '1'){
-            Pid = this.moveResult.reactId
-            console.log(Pid)
-            data = {
-              reactPid: Pid,
-              scenesId: this.question.scenesId,
-              reactId: this.question.reactId,
-              content: this.question.content,
-              jumpTo: this.question.jumpTo
-            }
-          }else{
-            if(this.moveResult.hasOwnProperty('entranceId')){
-              Pid = 0
-            }else{
-              Pid = this.moveResult.reactId
-            }
-            data = {
-              reactPid: Pid,
-              scenesId: this.question.scenesId,
-              reactId: this.question.reactId,
-              content: this.question.content,
-              jumpTo: this.question.jumpTo
-            }
+          let data = {
+            from: this.question.nodeId,
+            to: this.moveResult.nodeId,
           }
-          this.$api.scene.editor.updateQuestionNode(data).then((res)=>{
+          this.$api.scene.editor.nodeMove(data).then((res)=>{
             if(res.code === 'ok'){
               this.$store.dispatch('updateQuestionTree')
               _self.$message({
                 message: '移动成功',
                 type: 'success',
+                duration: 1000
+              });
+            }else{
+              _self.$message({
+                message: '移动失败',
+                type: 'error',
                 duration: 1000
               });
             }
@@ -884,6 +964,7 @@
               }
           })
         }
+        this.typeCheck()
         this.$store.dispatch('changeShowRelation')
         this.$store.dispatch('setConditionFlag',{
           flag: false
@@ -1057,17 +1138,9 @@
             type: 'changeInput'
           })
         }
-      }
-    },
-    mounted(){
-      this.viewScenesData(this.scenes)
-      this.record.push(this.scenes)
-    },
-    watch: {
-      jumpList: function () {
-        this.createLine()
       },
-      question: function () {
+      //节点判断
+      typeCheck: function () {
         this.nodeCtrl = {
           add: {
             question: false,
@@ -1089,130 +1162,71 @@
           moveUp: false,
           moveDown: false
         }
-
+        if(this.question){
+          this.nodeCtrl.edit = true
+          this.nodeCtrl.copy = true
+        }
         if(this.question.hasOwnProperty('answerId')){
           //回答
-          this.nodeCtrl.edit = true
-        }else if(this.question.nodeType === 1||this.question.nodeType === 2||this.question.nodeType === 3||this.question.nodeType === 4||this.question.nodeType === 5||this.question.nodeType === 6){
-          //条件
+//          this.nodeCtrl.edit = true
+        }else{
           this.nodeCtrl.move = true
-          if(this.question.nodes!==null&&this.question.nodes!=='null'&&this.question.nodes!==undefined&&this.question.nodes.length!==0){
-            this.nodeCtrl.add.conditionSecond = false
-            if(this.question.nodes[0].hasOwnProperty('answer')){
-              this.nodeCtrl.add.result = true
-            }else if(this.question.nodes[0].type=== 0){
-              this.nodeCtrl.add.question = true
-            }
-          }else if(this.question.jumpTo === -1||this.question.jumpTo === '-1'){
-            this.nodeCtrl.add.conditionSecond = true
-            this.nodeCtrl.jump = true
-            this.nodeCtrl.add.jumpNode = true
-            this.nodeCtrl.add.jumpScenes = true
-            this.nodeCtrl.add.result = true
-            this.nodeCtrl.add.question = true
-          }
-          if(this.question.nodeType!== 0){
-            this.nodeCtrl.add.conditionSecond = false
-          }else{
-            this.nodeCtrl.add.conditionSecond = true
-          }
-          if(this.copyNodeData.type === 'answer'){
-            if((this.question.nodes===undefined||this.question.nodes===null)&&this.question.jumpTo === '-1'){
-              this.nodeCtrl.paste = true
-            }else if(this.question.nodes[0].hasOwnProperty('answer')){
-              this.nodeCtrl.paste = true
-            }
-          }else if(this.copyNodeData.type === 'question'){
-            if(this.question.jumpTo === -1||this.question.jumpTo === '-1'){
-              this.nodeCtrl.paste = true
-            }
-          }
-          if(this.question.nodeType === 2||this.question.nodeType === 1){
-            this.nodeCtrl.add.condition = true
-          }else if(this.question.nodeType === 3){
-            this.nodeCtrl.add.conditionDuo = false
-          }else if(this.question.nodeType === 4||this.question.nodeType === 5||this.question.nodeType === 6){
-            this.nodeCtrl.add.conditionInput = false
-          }else{
-            this.nodeCtrl.add.condition = false
-            this.nodeCtrl.add.conditionDuo = false
-            this.nodeCtrl.add.conditionInput = false
-          }
-          this.nodeCtrl.edit = true
-        }else if(this.question.nodeType === 0){
-          this.nodeCtrl.add.conditionSecond = true
-
-          if(this.question.nodes=== null ||this.question.nodes === undefined|| this.question.nodes.length === 0){
-            this.nodeCtrl.add.question = true
-            this.nodeCtrl.add.condition = true
-            this.nodeCtrl.add.conditionDuo = true
-            this.nodeCtrl.add.conditionInput = true
-            this.nodeCtrl.paste = true
-          }else if(this.question.nodes[0].nodeType === 0){
-            this.nodeCtrl.add.question = true
-            this.nodeCtrl.add.condition = true
-            this.nodeCtrl.add.conditionDuo = true
-            this.nodeCtrl.add.conditionInput = true
-
-            if(this.copyNodeData.type === 'question'){
-              this.nodeCtrl.paste = true
-            }
-          }else if(this.question.nodes[0].nodeType === 1){
-//            this.nodeCtrl.add.condition = true
-            if(this.copyNodeData.type === 'condition'){
-              this.nodeCtrl.paste = true
-            }
-          }
-          this.nodeCtrl.add.beforeQuestion = true
-          this.nodeCtrl.move = true
-        }
-        if(this.questionGroup){
-          this.questionGroup.forEach((e,index)=>{
-            if(this.question.hasOwnProperty('answer')&&this.question.answer!==null){
-              if(e.answerId === this.question.answerId){
-                if(index === 0){
-
-                  this.nodeCtrl.moveUp = false
-                  if(this.questionGroup.length!==1){
-                    this.nodeCtrl.moveDown = true
-                  }
-                }else if(index === (this.questionGroup.length-1)){
-                  this.nodeCtrl.moveDown = false
-                  if(this.questionGroup.length!==1){
-                    this.nodeCtrl.moveUp = true
-                  }
-                }else{
-                  this.nodeCtrl.moveUp = true
-                  this.nodeCtrl.moveDown = true
+          if(this.question.nodeType === 0){
+            //判断操作
+            if(this.question.hasOwnProperty('nodes')&&this.question.nodes.length>0){
+              if(this.question.nodes[0].nodeType === 1){
+                this.nodeCtrl.add.conditionSecond = true
+                this.nodeCtrl.add.condition = true
+                if(this.copyNodeData.type === 'condition'&&this.copyNodeData.data.nodeType=== 1){
+                  this.nodeCtrl.paste = true
                 }
               }
             }else{
-              if(e.reactId === this.question.reactId){
-                if(index === 0){
-                  this.nodeCtrl.moveUp = false
-                  if(this.questionGroup.length!==1){
-                    this.nodeCtrl.moveDown = true
-                  }
-                }else if(index === (this.questionGroup.length-1)){
-                  this.nodeCtrl.moveDown = false
-                  if(this.questionGroup.length!==1){
-                    this.nodeCtrl.moveUp = true
-                  }
-                }else{
-                  this.nodeCtrl.moveUp = true
-                  this.nodeCtrl.moveDown = true
-                }
+              this.nodeCtrl.add.conditionSecond = true
+              this.nodeCtrl.add.condition = true
+              this.nodeCtrl.add.conditionDuo = true
+              this.nodeCtrl.add.conditionInput = true
+              //判断粘贴
+              if(this.copyNodeData.type === 'condition'){
+                this.nodeCtrl.paste = true
               }
             }
-          })
+
+          }else{
+            if(this.question.hasOwnProperty('nodes')&&this.question.nodes.length === 0){
+              this.nodeCtrl.add.question = true
+              this.nodeCtrl.add.result = true
+              if(this.copyNodeData.type === 'question'){
+                this.nodeCtrl.paste = true
+              }
+              if(!this.question.answer&&this.copyNodeData.type === 'answer'){
+                this.nodeCtrl.paste = true
+              }
+            }
+
+            if(this.question.nodeType === 1){
+              this.nodeCtrl.add.condition = true
+            }
+            if(this.question.jumpTo=== '-1'){
+              this.nodeCtrl.jump = true
+              this.nodeCtrl.add.jumpNode = true
+              this.nodeCtrl.add.jumpScenes = true
+            }
+          }
         }
-        if(this.question){
-          this.nodeCtrl.copy = true
-          this.nodeCtrl.edit = true
-        }else{
-          this.nodeCtrl.copy = false
-          this.nodeCtrl.edit = false
-        }
+
+      }
+    },
+    mounted(){
+      this.viewScenesData(this.scenes)
+      this.record.push(this.scenes)
+    },
+    watch: {
+      jumpList: function () {
+        this.createLine()
+      },
+      question: function () {
+        this.typeCheck()
       },
       jumpScenes: function () {
         if(this.jumpScenes){

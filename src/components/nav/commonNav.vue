@@ -5,7 +5,7 @@
     </div>
     <section class="navBox">
       <div class="nav" v-for="item in navList">
-        <section class="navItem" @click="activeNav(item)" :class="{'active':activeItem.name === item.name}">
+        <section class="navItem" @click.stop="activeNav(item)" :class="{'active':activeItem.name === item.name}">
           <div class="icon flexCenter">
             <i class="iconfont" :class="item.icon"></i>
           </div>
@@ -15,11 +15,11 @@
             <i class="fas fa-angle-up" v-else></i>
           </div>
         </section>
-        <section class="navItem second" v-for="nav in item.child" v-if="item.showChild&&expend" @click="activeSecond(nav,item)" :class="{'active':activeItem.name === nav.name}">
+        <section class="navItem second" v-for="nav in item.child" v-show="item.showChild" @click="activeSecond(nav,item)" :class="{'activeSecond':activeSecondItem.name === nav.name}">
           <div class="icon flexCenter">
             <i class="iconfont"></i>
           </div>
-          <p>{{nav.name}}</p>
+          <p class="navText">{{nav.name}}</p>
           <div class="showlist"></div>
         </section>
       </div>
@@ -38,14 +38,16 @@
     data(){
       return {
         activeItem: '',
-        expend: true,
-        showTest: false
+        showTest: false,
+        activeSecondItem: ''
       }
     },
     methods:{
       activeNav: function (item) {
         this.activeItem = item
         item.showChild = !item.showChild
+//        this.$emit('childChange',item)
+
         if(item.url){
           let route = {
             name: item.url
@@ -95,9 +97,15 @@
       this.navList.forEach((e)=>{
         if(e.url === this.$route.name){
           this.activeItem = e
+        }else if(e.child.length>0){
+          e.child.forEach((ele)=>{
+            if(ele.url === this.$route.name){
+              this.activeItem = e
+              this.activeSecondItem = ele
+            }
+          })
         }
       })
-
     },
     watch:{
       '$route': function () {
@@ -109,6 +117,7 @@
             e.child.forEach((ele)=>{
               if(ele.url === this.$route.name){
                 this.activeItem = e
+                this.activeSecondItem = ele
               }
             })
           }
@@ -125,11 +134,12 @@
     background: @gray;
     height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
     position: relative;
     padding-bottom: 3rem;
     border-right: solid 1px #ddd;
     width: 4rem;
-    transition: 0.5s;
+    transition: ease-in 0.5s;
     .test{
       height: 4rem;
       button{
@@ -138,6 +148,7 @@
         outline: none;
         border: solid 1px @blue;
         width: 3rem;
+        min-width: 3rem;
         height: 3rem;
         border-radius: 1.5rem;
         i{
@@ -151,15 +162,17 @@
     .navBox{
       .nav{
         .navItem{
-          padding: 0 1rem;
+          /*padding: 0 1rem;*/
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-content: flex-start;
           height: 3rem;
           color: #333;
           cursor: pointer;
           .icon{
-            width: 2rem;
+            width: 4rem;
+            min-width: 4rem;
+            height: 3rem;
           }
           .navText{
             display: none;
@@ -168,8 +181,8 @@
             white-space: nowrap;
             overflow: hidden;
             text-align: left;
-            margin-right: 1rem;
-            padding-left: 0.5rem;
+            /*margin-right: 1rem;*/
+            /*padding-left: 0.5rem;*/
           }
           .showlist{
             width: 1rem;
@@ -206,6 +219,7 @@
       button{
         height: 2rem;
         width: 7rem;
+        min-width: 7rem;
         background: #fff;
         color: @blue;
         outline: none;
@@ -229,12 +243,10 @@
           height: 3rem;
           color: #333;
           cursor: pointer;
-          .icon{
-            width: 2rem;
-          }
+          /*padding-right: 1rem;*/
           .navText{
             display: flex;
-            width: 7rem;
+            /*width: 7rem;*/
           }
           .showlist{
             width: 1rem;
@@ -245,13 +257,16 @@
           }
         }
         .second{
-          padding-left: 1.5rem;
+          /*padding-left: 1.5rem;*/
           overflow: hidden;
-
         }
         .active{
           background: @blue;
           color: #fff;
+        }
+        .activeSecond{
+          color: @blue;
+          border-right: solid 2px @blue;
         }
 
       }
@@ -264,6 +279,9 @@
       .nav{
         .navItem{
           color: #fff;
+        }
+        .navItem:hover{
+          background: #31313c;
         }
       }
     }

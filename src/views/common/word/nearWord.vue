@@ -23,7 +23,12 @@
         <!--</div>-->
         <div class="innerRight">
           <div class="rightTop">
-            <el-button type="primary" size="small" @click="addNearWord">+ 创建词语</el-button>
+            <div>
+              <el-button type="primary" size="small" @click="addNearWord">+ 创建词语</el-button>
+              <el-button size="small" type="success" @click="syncWord">同步同义词</el-button>
+            </div>
+
+
             <div class="searchPart">
               <el-input placeholder="输入同义词" v-model="searchFilter.search" @keyup.enter.native="searchWordCtrl">
                 <i slot="suffix" class="el-input__icon el-icon-search" @click="searchWordCtrl"></i>
@@ -267,6 +272,26 @@
             duration: 1000
           });
         }
+      },
+      syncWord: function () {
+        let robotId = this.$route.query.robotId
+        this.$api.robotAnalysis.word.near.syncData({
+          robotId: robotId,
+        }).then((res)=>{
+          if(res.msg==='ok'){
+            this.$message({
+              type: 'success',
+              message: '同步成功',
+              duration: 1000
+            });
+          }else{
+            this.$message({
+              type: 'error',
+              message: res.msg,
+              duration: 1000
+            });
+          }
+        })
       }
     },
     mounted(){
@@ -286,7 +311,9 @@
 <style lang="less">
   .nearWord{
     .bottom{
+      padding: 0 1rem;
       .content{
+        border: solid 1px #ddd;
         background: #fff;
         display: flex;
         padding: 0;

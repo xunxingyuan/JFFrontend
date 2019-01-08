@@ -23,31 +23,44 @@
     computed:{
       ...mapGetters({
         robotList: 'getRobotList',
-        choseRobot: 'getSelectRobot'
+        userNav: 'getUserMenu'
       })
     },
     methods:{
       _initData: function () {
-        let robot = window.sessionStorage.getItem('robotId')
-        if(robot){
-          this.robotList.forEach((e)=>{
-            if(e.robotId === robot){
-              this.$store.dispatch('setSelectRobot',e)
+        let route = this.$route
+        let userId = window.sessionStorage.getItem('userId')
+
+
+        if(!route.params.id&&this.$route.name==='robot'){
+          if(this.robotList.length>0){
+            this.$store.dispatch('setSelectRobot',this.robotList[0])
+            window.sessionStorage.setItem('robotId',this.robotList[0].robotId)
+            let flag = ''
+            this.userNav.forEach((e)=>{
+              if(e.url){
+                flag = flag ? flag : e.url
+              }else{
+                e.child.forEach((ele)=>{
+                  if(ele.url){
+                    flag = flag ? flag : ele.url
+                  }
+                })
+              }
+            })
+            if(flag){
+              this.$router.push({
+                path: '/console/robot/'+ this.robotList[0].robotId +'/' + flag
+              })
+            }else{
+              this.$message({
+                message: '当前用户无任何权限！',
+                type: 'info',
+                duration: 1000
+              });
+//              this.$router.go(-1)
             }
-          })
-          this.$router.push({
-            path: '/console/robot/'+ robot +'/robotService'
-          })
-        }else if(this.robotList.length>0){
-          this.$store.dispatch('setSelectRobot',this.robotList[0])
-          window.sessionStorage.setItem('robotId',this.robotList[0].robotId)
-          this.$router.push({
-            path: '/console/robot/'+ this.robotList[0].robotId +'/robotService'
-          })
-        }else{
-          this.$router.push({
-            name: 'robotManage'
-          })
+          }
         }
       },
       createRobot: function () {
@@ -83,6 +96,11 @@
     },
     mounted(){
       this._initData()
+    },
+    watch:{
+      robotList: function () {
+        this._initData()
+      }
     }
   }
 </script>

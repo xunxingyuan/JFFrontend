@@ -1,42 +1,75 @@
 <template>
   <div class="container robotMsg">
     <div class="top">
-      <p class="title"><i class="fas fa-arrow-left" @click="back"></i> 机器人配置</p>
+      <p class="title"><i class="fas fa-arrow-left" @click="back"></i> {{choseRobot.robotName}}配置</p>
     </div>
     <div class="bottom">
       <div class="content">
-        <div class="editItem">
-          <p class="title">运行信息</p>
-          <div class="itemDetail">
-            <div class="intro">
-              运行中
+        <div class="editItem robotStatus">
+          <div class="editBlock ctrl">
+            <p class="title">当前状态</p>
+            <div class="status" v-if="status === '1'">
+              <i class="iconfont icon-zanting"></i> <span>暂停运行</span>
             </div>
-            <div class="editData">
-              <el-switch
-                      v-model="value2"
-                      active-color="#13ce66"
-                      inactive-color="#ff4949">
-              </el-switch>
+            <div class="status" v-if="status === '2'" style="color:#6ce26c;">
+              <i class="iconfont icon-yunhang"></i> <span>正在运行</span>
+            </div>
+            <div class="btnBox">
+              <p v-if="status === '1'" @click="publishRobot">启动运行</p>
+              <p v-if="status === '2'" style="background:#fff;border-top: solid 1px #ddd;color: #333;border-bottom: solid 1px #ddd" @click="unpublishRobot">停止运行</p>
             </div>
           </div>
-          <div class="itemDetail">
-            <div class="intro">
-              创建时间
+          <div class="editBlock">
+           <p class="title">运行信息</p>
+           <!--<div class="itemDetail">-->
+             <!--<div class="intro">-->
+               <!--运行状态-->
+             <!--</div>-->
+             <!--<div class="editData">-->
+               <!--<el-switch-->
+                       <!--v-model="choseRobot.status"-->
+                       <!--@change="changeState"-->
+                       <!--active-color="#13ce66"-->
+                       <!--active-value="2"-->
+                       <!--inactive-value="1"-->
+                       <!--inactive-color="#ff4949">-->
+               <!--</el-switch>-->
+             <!--</div>-->
+           <!--</div>-->
+            <div class="itemDetail">
+              <div class="intro">
+                知识数量
+              </div>
+              <div class="editData">
+                --
+              </div>
             </div>
-            <div class="editData">
-              2018年6月18日 00:00
+            <div class="itemDetail">
+              <div class="intro">
+                创建时间
+              </div>
+              <div class="editData">
+                {{new Date(choseRobot.createdTime).toLocaleString()}}
+              </div>
+            </div>
+           <div class="itemDetail">
+             <div class="intro">
+               运行时间
+             </div>
+             <div class="editData">
+               {{new Date(choseRobot.publishedTime).toLocaleString()}}
+             </div>
+           </div>
+           <div class="itemDetail">
+             <div class="intro">
+               上次更新时间
+             </div>
+             <div class="editData">
+               {{new Date(choseRobot.publishedTime).toLocaleString()}}
+             </div>
+           </div>
+         </div>
 
-            </div>
-          </div>
-          <div class="itemDetail">
-            <div class="intro">
-              上次登录时间
-            </div>
-            <div class="editData">
-              2018年6月18日 00:00
-
-            </div>
-          </div>
         </div>
         <div class="editItem second">
           <p class="title">机器人信息</p>
@@ -45,7 +78,7 @@
               机器人名称（必填）
             </div>
             <div class="editData">
-              <el-input></el-input>
+              <el-input v-model="choseRobot.robotName"></el-input>
             </div>
           </div>
           <div class="itemDetail desc">
@@ -54,58 +87,146 @@
             </div>
             <div class="editData">
 
-              <el-input type="textarea" :rows="4" placeholder="请输入内容"></el-input>
+              <el-input v-model="choseRobot.robotDesc" type="textarea" :rows="4" placeholder="请输入内容"></el-input>
             </div>
           </div>
-          <div class="itemDetail">
-            <div class="intro">
-              使用的知识库
-            </div>
-            <div class="editData">
-              <el-select></el-select>
+          <!--<div class="itemDetail">-->
+            <!--<div class="intro">-->
+              <!--使用的知识库-->
+            <!--</div>-->
+            <!--<div class="editData">-->
+              <!--<el-select></el-select>-->
 
-            </div>
-          </div>
-          <div class="itemDetail">
-            <div class="intro">
-              使用的语义网
-            </div>
-            <div class="editData">
-              <el-select></el-select>
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div class="itemDetail">-->
+            <!--<div class="intro">-->
+              <!--使用的语义网-->
+            <!--</div>-->
+            <!--<div class="editData">-->
+              <!--<el-select></el-select>-->
 
-            </div>
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div class="itemDetail channelBox">-->
+            <!--<div class="intro">-->
+              <!--配置的渠道-->
+            <!--</div>-->
+            <!--<div class="editData ">-->
+              <!--<el-checkbox v-for="channel in channels" :label="channel" :key="channel">{{channel}}</el-checkbox>-->
+            <!--</div>-->
+          <!--</div>-->
+          <div class="btn">
+            <el-button type="primary" @click="changeMsg">提交</el-button>
           </div>
-          <div class="itemDetail channelBox">
-            <div class="intro">
-              配置的渠道
-            </div>
-            <div class="editData ">
-              <el-checkbox v-for="channel in channels" :label="channel" :key="channel">{{channel}}</el-checkbox>
-            </div>
-          </div>
-        </div>
-
-        <div class="btn">
-          <el-button type="primary">提交</el-button>
         </div>
       </div>
-
     </div>
   </div>
 </template>
 
 <script>
+  import { mapGetters, mapActions } from 'vuex'
+
   export default {
     name: 'robotMsg',
+    computed:{
+      ...mapGetters({
+        choseRobot: 'getSelectRobot'
+      })
+    },
     methods:{
       back: function () {
         this.$router.go(-1)
+      },
+      changeState: function (val) {
+        console.log(val)
+        if(val === '1'){
+          this.unpublishRobot()
+        }else if(val === '2'){
+          this.publishRobot()
+        }
+      },
+      unpublishRobot: function () {
+        let item = this.choseRobot
+        this.$api.robot.unPublishRobot({
+          robotId: item.robotId
+        }).then((res)=>{
+          if(res.status === 200){
+            this.$message({
+              message: '停止成功！',
+              type: 'success',
+              duration: 1000
+            });
+            this.status = '1'
+
+          }else{
+            this.$message({
+              message: res.msg,
+              type: 'error',
+              duration: 1000
+            });
+          }
+        })
+      },
+      publishRobot: function () {
+        let item = this.choseRobot
+        this.$api.robot.publishRobot({
+          robotId: item.robotId
+        }).then((res)=>{
+          if(res.status === 200){
+            this.$message({
+              message: '启动成功！',
+              type: 'success',
+              duration: 1000
+            });
+            this.status = '2'
+          }else{
+            this.$message({
+              message: res.msg,
+              type: 'error',
+              duration: 1000
+            });
+          }
+        })
+      },
+      changeMsg: function () {
+        this.$api.robot.editRobot({
+          robotId: this.choseRobot.robotId,
+          robotDesc: this.choseRobot.robotDesc,
+          robotName: this.choseRobot.robotName,
+          status: this.choseRobot.status
+        }).then((res)=>{
+          if(res.status === 200){
+            this.$message({
+              message: '修改成功！',
+              type: 'success',
+              duration: 1000
+            });
+          }else{
+            this.$message({
+              message: res.msg,
+              type: 'error',
+              duration: 1000
+            });
+          }
+        })
       }
     },
     data(){
       return {
         channels: ['微信','企业号','微博'],
-        value2: ''
+        value2: '',
+        status: '1'
+      }
+    },
+    mounted(){
+
+    },
+    watch:{
+      choseRobot: function () {
+        this.status = this.choseRobot.status
+
       }
     }
   }
@@ -122,13 +243,16 @@
     .bottom{
       padding: 0 1rem;
       padding-bottom: 1rem;
+      overflow: auto;
       .content{
-        background: #fff;
         padding: 0;
+        width: 1000px;
+        height: auto;
         .editItem{
           text-align: left;
           border-bottom: solid 1px #ddd;
           padding: 1rem;
+          margin-bottom: 1rem;
           .title{
             color: #333;
             font-weight: 600;
@@ -145,7 +269,8 @@
               margin-right: 1rem;
             }
             .editData{
-              width: 30rem;
+              flex: 1;
+              max-width: 20rem;
             }
           }
           .desc{
@@ -162,8 +287,67 @@
             }
           }
         }
+        .robotStatus{
+          padding: 0;
+          height: 14rem;
+          display: flex;
+          align-items: center;
+          border: none;
+          .editBlock{
+            background: #fff;
+            height: 100%;
+            border: solid 1px #ddd;
+            .title{
+              height: 3rem;
+              line-height: 3rem;
+              padding: 0 1rem;
+            }
+          }
+          .editBlock:nth-child(1){
+            flex: 1;
+            margin-right: 1rem;
+            height: 100%;
+          }
+          .editBlock:nth-child(2){
+            flex: 2;
+          }
+          .ctrl{
+            display: flex;
+            flex-flow: column;
+            padding: 0;
+            height: 100%;
+            .btnBox{
+              height: 3rem;
+              background: #2B86F6;
+              color: #fff;
+              line-height: 3rem;
+              text-align: center;
+              cursor: pointer;
+            }
+            .status{
+              flex: 1;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding-bottom: 1.5rem;
+              .iconfont{
+                font-size: 48px;
+                margin-right: 5px;
+              }
+            }
+
+          }
+          .itemDetail{
+            .intro{
+              width: 15rem;
+              text-align: right;
+              margin-right: 1rem;
+            }
+          }
+        }
         .second{
-          border:none;
+          background: #fff;
+          border: solid 1px #ddd;
         }
         .btn{
           margin-top: 2rem;
