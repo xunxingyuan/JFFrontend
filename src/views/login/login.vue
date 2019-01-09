@@ -73,7 +73,7 @@
             if(res.status === 200){
               window.sessionStorage.setItem('user',this.userInfo.username.value)
               window.sessionStorage.setItem('userInfo',JSON.stringify(res.data))
-              window.sessionStorage.setItem('userId',this.userInfo.userId)
+              window.sessionStorage.setItem('userId',res.data.userId)
               if(res.data.pid === '0'){
                 window.sessionStorage.setItem('userRole','admin')
                 this.$router.push({
