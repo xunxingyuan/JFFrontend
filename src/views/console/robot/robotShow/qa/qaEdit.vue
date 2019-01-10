@@ -191,7 +191,7 @@
         sameData:[],
         showSame: false,
         qaData:{
-          checkStatus: 4,
+          checkStatus: 1,
           question: '',
           categoryId: '',
           similarQuestionList: [],
@@ -263,7 +263,7 @@
         if(submitData.categoryId === 'weifenlei'||!submitData.categoryId){
           submitData.categoryId = ''
         }
-        submitData.checkStatus = 4
+        submitData.checkStatus = 1
         if(!this.ifHtml){
           submitData.answer = this.filterHTMLTag(submitData.answer)
         }
@@ -384,7 +384,7 @@
           let ten = Y10+M+D+h+m+s
 
           this.qaData = {
-            checkStatus: 4,
+            checkStatus: 1,
             question: '',
             categoryId: this.categoryId,
             similarQuestionList: [],
