@@ -1,5 +1,9 @@
 import axios from 'axios'
-import { Message, MessageBox,Loading } from 'element-ui'
+import {
+  Message,
+  MessageBox,
+  Loading
+} from 'element-ui'
 import router from '../router'
 // import store from '../store'
 // import { getToken } from '@/utils/auth'
@@ -7,7 +11,7 @@ import router from '../router'
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.BASE_API, // api 的 base_url
-  timeout: 40000 // 请求超时时间
+  timeout: 60000 // 请求超时时间
 })
 
 let loadingInstance
@@ -18,8 +22,10 @@ service.interceptors.request.use(
     // if (store.getters.token) {
     //   config.headers['X-Token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     // }
-    if(config.method!=='get'){
-      loadingInstance = Loading.service({ fullscreen: true });
+    if (config.method !== 'get') {
+      loadingInstance = Loading.service({
+        fullscreen: true
+      });
     }
     return config
   },
@@ -65,7 +71,7 @@ service.interceptors.response.use(
     // } else {
     //   return response.data
     // }
-    if(res.status === 20001){
+    if (res.status === 20001) {
       window.sessionStorage.removeItem('user')
       window.sessionStorage.removeItem('robotId')
       Message({
@@ -77,14 +83,14 @@ service.interceptors.response.use(
         name: 'login'
       })
     }
-    if(loadingInstance){
+    if (loadingInstance) {
       loadingInstance.close()
     }
     return response.data
   },
   error => {
     console.log('err' + error) // for debug
-    if(loadingInstance){
+    if (loadingInstance) {
       loadingInstance.close()
     }
     Message({

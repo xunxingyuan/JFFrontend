@@ -20,8 +20,11 @@
               <th>备注</th>
               <th>操作</th>
             </tr>
-            <tr v-for="item in groupList">
-              <td>{{item.groupName}}</td>
+            <tr v-for="(item,index) in groupList" :key="index">
+              <td @click="viewGroup(item)">
+                <i class="iconfont icon-huangguan" style="color: #F9760D;margin-right:5px;"></i>
+                <span style="color: #2B86F6;">{{item.groupName}}</span>
+              </td>
               <td>{{item.userCount}}</td>
               <td>{{new Date(item.createdTime).toLocaleString()}}</td>
               <td>
@@ -32,118 +35,131 @@
               <td>{{item.remark}}</td>
               <td>
                 <div class="ctrl">
-                  <span class="view" @click="editGroup(item)">编辑</span>
-                  <span class="view" @click="viewGroup(item)">查看</span>
+                  <span class="view" @click="editGroup(item)">设置</span>
+                  <!-- <span class="view" @click="viewGroup(item)">查看</span> -->
                   <span class="view" @click="deleteGroup(item)">删除</span>
                 </div>
-
               </td>
             </tr>
           </table>
-          <p v-if="groupList.length===0" style="font-size: 14px;color: #666;margin-top: 2rem;">暂无相关用户组</p>
+          <p
+            v-if="groupList.length===0"
+            style="font-size: 14px;color: #666;margin-top: 2rem;"
+          >暂无相关用户组</p>
         </div>
-
       </div>
     </div>
   </div>
 </template>
 
 <script>
-  import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from "vuex";
 
-  export default {
-    name: 'userGroup',
-    computed:{
-      ...mapGetters({
-        groupList: 'getUserGroupList',
-      })
+export default {
+  name: "userGroup",
+  computed: {
+    ...mapGetters({
+      groupList: "getUserGroupList"
+    })
+  },
+  methods: {
+    newGroup: function() {
+      this.$router.push({
+        name: "newGroup"
+      });
     },
-    methods:{
-      newGroup: function () {
-        this.$router.push({
-          name: 'newGroup'
-        })
-      },
-      editGroup: function (item) {
-        this.$router.push({
-          name: 'newGroup',
-          query:{
-            type: 'edit',
-            groupId: item.groupId
-          }
-        })
-      },
-      viewGroup: function (item) {
-        this.$router.push({
-          name: 'groupDetail',
-          query:{
-            groupId: item.groupId
-          }
-        })
-      },
-      viewAllUser: function () {
-        this.$router.push({
-          name: 'allUser',
-        })
-      },
-      _initData: function () {
-        let userInfo = JSON.parse(window.sessionStorage.getItem('userInfo'))
-        this.$api.user.userGroup.groupList({
+    editGroup: function(item) {
+      this.$router.push({
+        name: "newGroup",
+        query: {
+          type: "edit",
+          groupId: item.groupId
+        }
+      });
+    },
+    viewGroup: function(item) {
+      this.$router.push({
+        name: "groupDetail",
+        query: {
+          groupId: item.groupId
+        }
+      });
+    },
+    viewAllUser: function() {
+      this.$router.push({
+        name: "allUser"
+      });
+    },
+    _initData: function() {
+      let userInfo = JSON.parse(window.sessionStorage.getItem("userInfo"));
+      this.$api.user.userGroup
+        .groupList({
           userId: userInfo.userId
-        }).then((res)=>{
-          if(res.status === 200){
-            this.$store.dispatch('setUserGroupList',res.data)
-          }
         })
-      },
-      deleteGroup: function (item) {
-        this.$confirm('用户组'+item.groupName+'包含'+ item.userCount+'个用户，此操作将永久删除该用户组以及用户在该用户组的权限, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(()=>{
-          this.$api.user.userGroup.deleteGroup({
+        .then(res => {
+          if (res.status === 200) {
+            this.$store.dispatch("setUserGroupList", res.data);
+          }
+        });
+    },
+    deleteGroup: function(item) {
+      this.$confirm(
+        "用户组" +
+          item.groupName +
+          "包含" +
+          item.userCount +
+          "个用户，此操作将永久删除该用户组以及用户在该用户组的权限, 是否继续?",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      ).then(() => {
+        this.$api.user.userGroup
+          .deleteGroup({
             groupId: item.groupId
-          }).then((res)=>{
-            if(res.status === 200){
+          })
+          .then(res => {
+            if (res.status === 200) {
               this.$message({
-                type: 'success',
+                type: "success",
                 duration: 1000,
-                message: '删除成功!'
+                message: "删除成功!"
               });
-              this._initData()
-            }else{
+              this._initData();
+            } else {
               this.$message({
-                type: 'error',
+                type: "error",
                 duration: 1000,
                 message: res.msg
               });
             }
-          })
-        })
-      }
-    },
-    mounted(){
-      this._initData()
-    },
-    watch:{
-      '$route': function () {
-        if(this.$route.name === 'userGroup'){
-          this._initData()
-        }
+          });
+      });
+    }
+  },
+  mounted() {
+    this._initData();
+  },
+  watch: {
+    $route: function() {
+      if (this.$route.name === "userGroup") {
+        this._initData();
       }
     }
   }
+};
 </script>
 
 <style lang="less">
-  .userGroup{
-    .bottom{
-      padding: 0 1rem;
-      .content{
-        background: #fff;
-        padding: 1rem;
-      }
+.userGroup {
+  .bottom {
+    padding: 0 1rem;
+    .content {
+      background: #fff;
+      padding: 1rem;
     }
   }
+}
 </style>
