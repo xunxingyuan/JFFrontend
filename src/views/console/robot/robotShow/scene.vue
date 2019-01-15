@@ -4,10 +4,11 @@
       <p class="title">多轮问答</p>
       <div class="topTools">
         <span
-          v-for="item in sceneMode"
+          v-for="(item,index) in sceneMode"
           class="flexCenter"
           :class="{'active': activeMode === item.id}"
           @click="activeMode = item.id"
+          :key="index"
         >{{item.name}}</span>
       </div>
     </div>
@@ -844,7 +845,7 @@ export default {
               if (res.status === 200) {
                 this.renamePath(
                   this.treeData,
-                  value,
+                  value.value,
                   this.choseCategory.categoryId
                 );
               } else {

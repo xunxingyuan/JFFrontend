@@ -158,31 +158,36 @@ export default {
     },
     submitGroup: function() {
       let len = this.checkList.length;
+      let ids = "";
       this.checkList.forEach((e, index) => {
-        this.$api.user.userGroup
-          .changeUserGroup({
-            groupId: e,
-            userId: this.selectUser.userId
-          })
-          .then(res => {
-            if (res.status === 200) {
-              if (index === len - 1) {
-                this.$message({
-                  type: "success",
-                  duration: 1000,
-                  message: "修改成功!"
-                });
-                this.editShow = false;
-              }
-            } else {
-              this.$message({
-                type: "error",
-                duration: 1000,
-                message: res.msg
-              });
-            }
-          });
+        if (index !== 0) {
+          ids += "," + e;
+        } else {
+          ids = e;
+        }
       });
+
+      this.$api.user.userGroup
+        .changeUserGroup({
+          groupIds: ids,
+          userId: this.selectUser.userId
+        })
+        .then(res => {
+          if (res.status === 200) {
+            this.$message({
+              type: "success",
+              duration: 1000,
+              message: "修改成功!"
+            });
+            this.editShow = false;
+          } else {
+            this.$message({
+              type: "error",
+              duration: 1000,
+              message: res.msg
+            });
+          }
+        });
     }
   },
   mounted() {
