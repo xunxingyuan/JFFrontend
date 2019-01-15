@@ -222,7 +222,8 @@ export default {
                 robotId: this.choseRobot.robotId,
                 online: this.ifOntology,
                 ontoUrl: response.url,
-                ontoName: ""
+                ontoName: "",
+                ontologyId: ""
               };
               this.ontologyList.forEach(element => {
                 if (element.projectId === this.robotOntology) {
@@ -230,6 +231,7 @@ export default {
                     element.displayName +
                     "/" +
                     window.sessionStorage.getItem("user");
+                  data.ontologyId = element.projectId;
                 }
               });
 

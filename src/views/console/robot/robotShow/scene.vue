@@ -158,8 +158,8 @@
                   >
                     <div class="text">{{item.sceneName}}</div>
                   </td>
-                  <td :title="item.createdBy">
-                    <div class="text">{{item.createdBy}}</div>
+                  <td :title="item.createUserName">
+                    <div class="text">{{item.createUserName}}</div>
                   </td>
                   <td>
                     <span v-if="item.status === 0" style="color: #666">未生效</span>
