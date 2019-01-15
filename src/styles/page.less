@@ -1,31 +1,31 @@
 @import "common";
 
 //登录注册通用
-.loginContain{
+.loginContain {
   width: 100%;
   height: 100%;
   background: @gray;
-  .loginBox{
+  .loginBox {
     width: 340px;
     height: 360px;
     background: #fff;
     border-radius: 4px;
-    box-shadow: 2px 2px 10px 0 #BFD1EA;
+    box-shadow: 2px 2px 10px 0 #bfd1ea;
     z-index: 10;
     flex-flow: column;
     padding: 20px 60px;
     justify-content: center;
     position: relative;
-    .registerTips{
+    .registerTips {
       font-size: 0.9rem;
       color: #999;
       margin-top: 0;
       cursor: pointer;
     }
-    .registerTips:hover{
+    .registerTips:hover {
       color: @blue;
     }
-    .logo{
+    .logo {
       position: absolute;
       top: -40px;
       width: 80px;
@@ -35,17 +35,17 @@
       background: #fff;
       box-shadow: 2px 2px 4px #e2e2e2;
       border-radius: 40px;
-      img{
+      img {
         width: 48px;
         height: 61px;
       }
     }
-    .title{
+    .title {
       font-size: 20px;
       color: #333;
       margin: 2rem 0;
     }
-    .btn{
+    .btn {
       height: 2rem;
       width: 100%;
       cursor: pointer;
@@ -54,13 +54,13 @@
       color: #fff;
       line-height: 2rem;
     }
-    .inputItem{
+    .inputItem {
       height: 3rem;
       margin-bottom: 0.5rem;
-      .inputBox{
+      .inputBox {
         position: relative;
         font-size: 14px;
-        input{
+        input {
           width: 100%;
           border: solid 1px #ddd;
           border-radius: 2px;
@@ -68,10 +68,10 @@
           padding-left: 60px;
           outline: none;
         }
-        input:focus{
+        input:focus {
           border: solid 1px @blue;
         }
-        .inputTitle{
+        .inputTitle {
           position: absolute;
           width: 60px;
           height: 2rem;
@@ -81,7 +81,7 @@
           color: #999;
         }
       }
-      .tips{
+      .tips {
         display: none;
         width: 100%;
         text-align: left;
@@ -89,18 +89,18 @@
         color: @red;
       }
     }
-    .error{
-      .inputBox{
-        input{
+    .error {
+      .inputBox {
+        input {
           border: solid 1px @red;
         }
       }
-      .tips{
+      .tips {
         display: block;
       }
     }
   }
-  .bg{
+  .bg {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -112,75 +112,79 @@
 }
 
 //文本超出省略
-.textOver{
+.textOver {
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-all;
-  white-space:nowrap;
+  white-space: nowrap;
 }
 
 //通用表格
-.gtable{
+.gtable {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  tr{
-    th{
+  tr {
+    th {
       color: #666;
       font-weight: 600;
       font-size: 0.9rem;
     }
-    td{
+    td {
       color: #333;
       font-size: 0.8rem;
       cursor: pointer;
     }
-    th,td{
+    th,
+    td {
       text-align: left;
       height: 3rem;
       border-bottom: solid 1px #ddd;
       padding-left: 1rem;
       padding-right: 1rem;
     }
-    .ctrl{
+    .ctrl {
       color: #666;
-      .view{
+      .view {
         color: @blue;
         margin-right: 1rem;
       }
-      .edit,.ctrl,.copy{
+      .edit,
+      .ctrl,
+      .copy {
         color: @blue;
       }
-      .edit:hover{
+      .edit:hover {
         color: @red;
       }
-      .del,.edit{
+      .del,
+      .edit {
         margin-left: 1rem;
       }
-      .del:hover{
+      .del:hover {
         color: @red;
       }
-      .copy:hover{
+      .copy:hover {
         color: orange;
       }
     }
-    .text{
+    .text {
       width: 100%;
       height: 3rem;
       line-height: 3rem;
       overflow: hidden;
       text-overflow: ellipsis;
       word-break: break-all;
-      white-space:nowrap;
+      white-space: nowrap;
     }
   }
-  tr:hover{
+  tr:hover {
     background: #f5f7fa;
   }
 }
 
 //通用居中弹出层
-.coverBack{
+.coverBack {
   position: fixed;
   width: 100%;
   height: 100%;
@@ -193,18 +197,18 @@
   right: 0;
   top: 0;
   //居中布局
-  .centerBox{
+  .centerBox {
     width: 30rem;
     height: 35rem;
     background: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     border-radius: 2px;
     overflow: hidden;
     display: flex;
     flex-flow: column;
     align-items: center;
     justify-content: space-between;
-    .title{
+    .title {
       height: 3rem;
       background: #f3f3f3;
       width: 100%;
@@ -213,7 +217,7 @@
       padding: 0 1rem;
       display: flex;
     }
-    .content{
+    .content {
       flex: 1;
       display: flex;
       flex-flow: column;
@@ -221,26 +225,26 @@
       justify-content: center;
       width: 100%;
       padding: 1rem 4rem;
-      .addItem{
+      .addItem {
         display: flex;
         align-items: center;
         width: 100%;
         margin-bottom: 1rem;
-        p{
+        p {
           font-size: 0.9rem;
           color: #333;
           min-width: 6rem;
         }
-        .itemInput{
+        .itemInput {
           flex: 1;
         }
       }
     }
-    .btnGroup{
+    .btnGroup {
       height: 4rem;
     }
 
-    .boxHeader{
+    .boxHeader {
       width: 100%;
       height: 3rem;
       min-height: 3rem;
@@ -248,11 +252,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      span{
+      span {
         font-weight: 600;
       }
     }
-    .boxContent{
+    .boxContent {
       flex: 1;
       width: 100%;
       padding: 0 1rem 1rem 1rem;
@@ -261,17 +265,18 @@
       overflow-x: hidden;
       overflow-y: auto;
     }
-    .boxSetting{
+    .boxSetting {
       width: 100%;
       padding: 0 1rem;
       min-height: 5rem;
       height: 5rem;
       font-size: 0.9rem;
       color: #333;
-      p{
+      p {
         text-align: left;
       }
-      .cancel,.submit{
+      .cancel,
+      .submit {
         width: 100px;
         height: 32px;
         display: inline-block;
@@ -281,35 +286,33 @@
         cursor: pointer;
         font-size: 0.9rem;
       }
-      .cancel{
+      .cancel {
         border: solid 1px #ddd;
         color: #666;
         background: #f9f9f9;
       }
-      .submit{
-        background: #2B86F6;
+      .submit {
+        background: #2b86f6;
         color: #fff;
       }
-      .cancel:hover{
+      .cancel:hover {
         color: #333;
         border: solid 1px #999;
       }
-      .submit:hover{
+      .submit:hover {
         background: #00bfff;
       }
     }
   }
-
 }
 
-
 //通用容器
-.container{
+.container {
   display: flex;
   flex-flow: column;
   height: 100%;
   background: @bg;
-  .top{
+  .top {
     height: 3rem;
     min-height: 3rem;
     width: 100%;
@@ -317,11 +320,11 @@
     align-items: center;
     padding: 0 1rem;
     position: relative;
-    .title{
+    .title {
       font-size: 1.2rem;
       color: #000;
     }
-    .topTools{
+    .topTools {
       position: absolute;
       top: 0;
       left: 0;
@@ -330,18 +333,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      span{
+      span {
         color: #666;
         margin-left: 1rem;
         cursor: pointer;
         position: relative;
         height: 100%;
       }
-      .active{
+      .active {
         color: @blue;
       }
-      .active:before{
-        content: '';
+      .active:before {
+        content: "";
         width: 50%;
         height: 2px;
         background: @blue;
@@ -351,29 +354,29 @@
       }
     }
   }
-  .bottom{
+  .bottom {
     flex: 1;
     overflow: hidden;
-    .content{
+    .content {
       height: 100%;
       overflow: auto;
       overflow-x: hidden;
       padding: 0 1rem;
-      .tools{
+      .tools {
         display: flex;
         align-items: center;
         justify-content: space-between;
         margin-bottom: 1rem;
-        p{
+        p {
           color: #666;
           margin-right: 1rem;
           font-size: 14px;
         }
-        .inputItem{
+        .inputItem {
           margin-right: 2rem;
         }
       }
-      .tips{
+      .tips {
         font-size: 14px;
         color: #666;
       }
@@ -382,10 +385,10 @@
 }
 
 //通用框架
-.container{
-  .bottom{
-    .content{
-      .innerLeft{
+.container {
+  .bottom {
+    .content {
+      .innerLeft {
         width: 19rem;
         height: 100%;
         border-right: solid 1px #ddd;
@@ -395,33 +398,33 @@
         flex-flow: column;
         background: #fff;
 
-        .innerTitle{
+        .innerTitle {
           height: 3rem;
           min-height: auto;
-          background: #F8F8F8;
+          background: #f8f8f8;
           border-top: solid 1px #ddd;
           border-bottom: solid 1px #ddd;
           justify-content: space-between;
           padding: 0 1rem;
           font-size: 14px;
           color: #333;
-          .ctrl{
-            i{
+          .ctrl {
+            i {
               margin-left: 1rem;
               color: #333;
             }
           }
         }
-        .innerContent{
+        .innerContent {
           flex: 1;
           font-size: 14px;
           overflow: auto;
-          .treeBox{
+          .treeBox {
             padding-left: 1rem;
           }
         }
       }
-      .innerRight{
+      .innerRight {
         flex: 1;
         background: #fff;
         border: solid 1px #ddd;
@@ -432,31 +435,31 @@
         overflow: auto;
         position: relative;
 
-        .rightTop{
+        .rightTop {
           min-height: 2rem;
           display: flex;
           align-items: center;
         }
-        .rightBottom{
+        .rightBottom {
           flex: 1;
           position: relative;
-          .rightContent{
+          .rightContent {
             height: 100%;
             position: relative;
             padding-bottom: 3rem;
-            .release{
+            .release {
               color: @blue;
               margin-right: 1rem;
             }
-            .edit{
+            .edit {
               color: @blue;
               margin-right: 1rem;
             }
-            .del{
+            .del {
               color: #666;
             }
 
-            .pageBox{
+            .pageBox {
               position: absolute;
               right: 0;
               bottom: 0;
@@ -464,12 +467,12 @@
               display: flex;
               align-items: center;
             }
-            .tips{
+            .tips {
               margin-top: 3rem;
               color: #666;
               font-size: 14px;
             }
-            .filterBox{
+            .filterBox {
               min-height: 3rem;
               width: 100%;
               border: solid 1px #ddd;
@@ -479,30 +482,29 @@
               flex-wrap: wrap;
               padding: 10px 1rem 0 1rem;
               font-size: 12px;
-              .filterItem{
+              .filterItem {
                 margin-right: 10px;
                 margin-bottom: 10px;
                 display: flex;
                 align-items: center;
-                .itemName{
+                .itemName {
                   margin-right: 10px;
                   width: 3rem;
                   text-align: right;
                 }
               }
             }
-
           }
-          .aimlContain{
+          .aimlContain {
             display: flex;
             flex-wrap: wrap;
             padding-top: 1rem;
-            .aimltips{
+            .aimltips {
               margin-top: 1rem;
               font-size: 14px;
               color: #666;
             }
-            .aimlBox{
+            .aimlBox {
               width: 9rem;
               height: 8rem;
               display: flex;
@@ -512,7 +514,7 @@
               position: relative;
               border-radius: 2px;
               cursor: pointer;
-              .release{
+              .release {
                 position: absolute;
                 left: 30px;
                 top: 12px;
@@ -520,14 +522,14 @@
                 display: none;
                 font-size: 12px;
               }
-              .del{
+              .del {
                 position: absolute;
                 left: 10px;
                 top: 10px;
                 color: @red;
                 display: none;
               }
-              .icon{
+              .icon {
                 width: 2rem;
                 height: 2rem;
                 line-height: 2rem;
@@ -537,39 +539,39 @@
                 color: @blue;
                 border-top-right-radius: 8px;
               }
-              span{
+              span {
                 font-size: 14px;
                 color: #333;
                 width: 70%;
                 overflow: hidden;
                 word-break: break-all;
                 text-overflow: ellipsis;
-                white-space:nowrap;
+                white-space: nowrap;
               }
             }
-            .aimlBox:hover{
+            .aimlBox:hover {
               background: #eef5fe;
-              .del{
+              .del {
                 display: block;
               }
-              .release{
+              .release {
                 display: block;
               }
             }
           }
         }
-        .aimlEditor{
-          .ace-twilight{
-            .ace_print-margin{
+        .aimlEditor {
+          .ace-twilight {
+            .ace_print-margin {
               border: none;
             }
           }
         }
       }
-      .aimlBox{
+      .aimlBox {
         padding-bottom: 0;
       }
-      .rightTools{
+      .rightTools {
         position: absolute;
         height: 4rem;
         width: 100%;
@@ -577,24 +579,24 @@
         left: 0;
         display: flex;
         padding: 8px;
-        .toolsBox{
+        .toolsBox {
           width: 100%;
           height: 100%;
           border: solid 1px #ddd;
           background: #fff;
-          box-shadow: 0 0 3px  #dedede;
+          box-shadow: 0 0 3px #dedede;
           display: flex;
           align-items: center;
           padding: 0 1rem;
-          .toolsItem{
+          .toolsItem {
             font-size: 14px;
             display: inline-block;
             height: 2rem;
             line-height: 2rem;
             padding: 0 1rem;
-            border: solid 1px #2B86F6;
+            border: solid 1px #2b86f6;
             margin-left: -1px;
-            color: #2B86F6;
+            color: #2b86f6;
             cursor: pointer;
           }
         }
@@ -620,10 +622,13 @@
         background: #ddd;
         width: 100%;
       }
-      .leftTopLine,.leftBotLine,.leftMidLine,.rightTopLine{
+      .leftTopLine,
+      .leftBotLine,
+      .leftMidLine,
+      .rightTopLine {
         position: absolute;
       }
-      .rightTopLine{
+      .rightTopLine {
         height: 1.8rem;
         width: 2px;
         right: -2px;
@@ -631,7 +636,7 @@
         background: #ffffff;
         z-index: 11;
       }
-      .resize{
+      .resize {
         height: 100%;
         display: flex;
         align-items: center;
@@ -642,11 +647,11 @@
         width: 16px;
         margin-top: -1px;
         color: #ddd;
-        i{
+        i {
           margin-top: 2px;
         }
       }
-      .arrow{
+      .arrow {
         width: 0;
         height: 0;
         border: solid 0.3rem #fff;
@@ -665,13 +670,16 @@
       cursor: pointer;
       position: relative;
       margin-bottom: 0.6rem;
-      .topContain{
+      .topContain {
         font-weight: 600;
       }
-      .topContain,.midContain{
+      .topContain,
+      .midContain {
         margin: 0 0.5rem;
       }
-      .topContain, .midContain, .botContain {
+      .topContain,
+      .midContain,
+      .botContain {
         height: 1.2rem;
         line-height: 1.2rem;
         overflow: hidden;
@@ -680,91 +688,91 @@
         text-align: left;
         user-select: none;
       }
-      .midContain{
+      .midContain {
         font-size: 10px;
         display: flex;
         align-items: center;
-        i{
+        i {
           min-width: 16px;
         }
-        span{
+        span {
           height: 1.2rem;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
         }
       }
-      .botContain{
+      .botContain {
         width: 100%;
         padding: 0 0.5rem;
         display: flex;
         justify-content: flex-end;
-        i{
+        i {
           margin-left: 6px;
           display: none;
         }
       }
     }
-    .nodeBlock:hover{
-      .botContain{
-        i{
+    .nodeBlock:hover {
+      .botContain {
+        i {
           display: block;
         }
       }
     }
-    .scenes{
+    .scenes {
       border-color: #2b86f6;
-      .topContain{
+      .topContain {
         color: #2b86f6;
       }
     }
-    .scenes:hover{
+    .scenes:hover {
       border: solid 1px #2b86f6;
       box-shadow: 0 0 10px #2b86f6;
     }
-    .condition{
+    .condition {
       border-color: #ffb129;
-      .topContain{
+      .topContain {
         color: #ffb129;
       }
     }
-    .condition:hover{
+    .condition:hover {
       border: solid 1px #ffb129;
       box-shadow: 0 0 10px #ffb129;
     }
-    .answer{
+    .answer {
       border-color: #17baa9;
-      .topContain{
+      .topContain {
         color: #17baa9;
       }
     }
-    .answer:hover{
+    .answer:hover {
       border: solid 1px #17baa9;
       box-shadow: 0 0 10px #17baa9;
     }
-    .reply{
+    .reply {
       border-color: #2b86f6;
-      .topContain{
+      .topContain {
         color: #2b86f6;
       }
     }
-    .reply:hover{
+    .reply:hover {
       border: solid 1px #2b86f6;
       box-shadow: 0 0 10px #2b86f6;
     }
-    .active{
-      border: solid 1px #FF0000;
-      box-shadow: 0 0 10px #FF0000;
+    .active {
+      border: solid 1px #ff0000;
+      box-shadow: 0 0 10px #ff0000;
     }
-    .active:hover{
-      border: solid 1px #FF0000;
-      box-shadow: 0 0 10px #FF0000;
+    .active:hover {
+      border: solid 1px #ff0000;
+      box-shadow: 0 0 10px #ff0000;
     }
   }
 }
 
 //问题编辑框
-.questionEditBox{
+.questionEditBox {
   position: absolute;
   left: 0;
   top: 0;
@@ -773,12 +781,12 @@
   width: 100%;
   height: 100%;
   z-index: 2000;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: flex-end;
   align-items: center;
   cursor: auto;
-  .box{
+  .box {
     background: #fff;
     height: 100%;
     width: 35rem;
@@ -789,7 +797,7 @@
     justify-content: space-between;
     //overflow: auto;
     //overflow-x: hidden;
-    .close{
+    .close {
       position: absolute;
       top: 10px;
       left: -20px;
@@ -802,7 +810,7 @@
       border-radius: 20px;
       cursor: pointer;
     }
-    .title{
+    .title {
       font-size: 1rem;
       color: #333;
       height: 3rem;
@@ -810,29 +818,29 @@
       padding: 1rem 20px;
       text-align: left;
     }
-    .inputBox{
+    .inputBox {
       flex: 1;
       font-size: 0.9rem;
-      padding:  0 1rem 1rem 1rem;
+      padding: 0 1rem 1rem 1rem;
       text-align: left;
       display: block;
       //flex-flow: column;
       overflow-y: auto;
-      .inputTitle{
+      .inputTitle {
         font-weight: 600;
         margin: 1rem 0;
         display: flex;
         flex-wrap: wrap;
-        span{
+        span {
           margin-left: 1rem;
           cursor: pointer;
           color: #666;
         }
-        .active{
-          color: #2B86F6;
+        .active {
+          color: #2b86f6;
         }
       }
-      .inputBoxItem{
+      .inputBoxItem {
         margin: 0.5rem 0;
         //height: 2rem;
         //min-height: 2.5rem;
@@ -840,11 +848,11 @@
         overflow: hidden;
         display: flex;
         justify-content: space-between;
-        .inputItem{
+        .inputItem {
           flex: 1;
           display: flex;
           align-items: center;
-          .inputMsg{
+          .inputMsg {
             width: 6.5rem;
             min-width: 6.5rem;
             line-height: 1.5;
@@ -853,16 +861,16 @@
             //align-self: flex-start;
             color: #666;
           }
-          .el-input{
+          .el-input {
             flex: 1;
           }
         }
-        .del{
+        .del {
           width: 3rem;
           display: flex;
           align-items: center;
           justify-content: center;
-          span{
+          span {
             border: solid 1px #ddd;
             width: 2rem;
             height: 2rem;
@@ -872,54 +880,54 @@
             color: #ddd;
             cursor: pointer;
           }
-          span:hover{
-            color: #2B86F6;
-            border: solid 1px #2B86F6;
+          span:hover {
+            color: #2b86f6;
+            border: solid 1px #2b86f6;
           }
         }
       }
     }
-    .btnBox{
+    .btnBox {
       height: 3rem;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-      background: #ECF1F7;
-      .testBtn{
+      background: #ecf1f7;
+      .testBtn {
         height: 2rem;
         position: absolute;
         left: 1rem;
         top: 0.5rem;
-        border: solid 1px #2B86F6;
+        border: solid 1px #2b86f6;
         width: 6rem;
         font-size: 0.9rem;
-        color: #2B86F6;
+        color: #2b86f6;
         line-height: 2rem;
       }
-      .btnGroup{
+      .btnGroup {
         font-size: 0.9rem;
         display: flex;
-        span{
+        span {
           height: 2rem;
           width: 6rem;
           line-height: 2rem;
         }
-        .submit{
-          background: #2B86F6;
+        .submit {
+          background: #2b86f6;
           color: #fff;
           margin-right: 1rem;
           cursor: pointer;
         }
-        .cancel{
+        .cancel {
           color: #666;
-          border: solid 1px #DDDDDD;
+          border: solid 1px #dddddd;
           cursor: pointer;
         }
-        .submit:active{
+        .submit:active {
           background: #00bfff;
         }
-        .cancel:active{
+        .cancel:active {
           color: #333;
         }
       }
@@ -928,8 +936,8 @@
 }
 
 //按钮
-.btn_normal{
-  background: #2B86F6;
+.btn_normal {
+  background: #2b86f6;
   font-size: 14px;
   color: #fff;
   display: flex;
@@ -938,37 +946,36 @@
   border-radius: 2px;
   cursor: pointer;
 }
-.btn_normal:hover{
-  box-shadow: 2px 2px 15px #BFD1FA;
+.btn_normal:hover {
+  box-shadow: 2px 2px 15px #bfd1fa;
 }
 
-
 //顶部管理
-.robotTop{;
+.robotTop {
   height: 3.5rem;
   min-height: 3.5rem;
   /*background-color: @blue;*/
-  background:linear-gradient(90deg,#2B86F6,#008ff8);
-  box-shadow:1rem 0 8rem rgba(187,187,187,0.31);
+  background: linear-gradient(90deg, #2b86f6, #008ff8);
+  box-shadow: 1rem 0 8rem rgba(187, 187, 187, 0.31);
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  .left{
+  .left {
     width: 11rem;
     background: @deepBlue;
     font-size: 2rem;
     height: 100%;
     color: #fff;
   }
-  .mid{
+  .mid {
     flex: 1;
     overflow-x: auto;
     display: flex;
     align-items: flex-end;
     padding-left: 2rem;
     height: 100%;
-    .robotItem{
+    .robotItem {
       height: 2.5rem;
       width: 8rem;
       min-width: 8rem;
@@ -976,9 +983,9 @@
       text-align: center;
       color: #fff;
       cursor: pointer;
-      background: #24589B;
+      background: #24589b;
       margin-left: 1rem;
-      p{
+      p {
         width: 5rem;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -986,19 +993,19 @@
         margin: 0;
         padding: 0;
       }
-      span{
+      span {
         width: 10px;
         height: 10px;
         border-radius: 5px;
       }
-      .open{
+      .open {
         background: @green;
       }
-      .close{
-        background: linear-gradient(to bottom,#D7D7D7,#707070)
+      .close {
+        background: linear-gradient(to bottom, #d7d7d7, #707070);
       }
     }
-    .active{
+    .active {
       background: @bg;
       color: #333;
       border-top-right-radius: 2px;
@@ -1007,45 +1014,45 @@
       line-height: 3rem;
       margin-bottom: 0;
     }
-    .addRobot{
+    .addRobot {
       width: 7rem;
       min-width: 7rem;
       height: 2rem;
-      color: #EBF4FF;
-      background: #24589B;
+      color: #ebf4ff;
+      background: #24589b;
       margin-bottom: 8px;
       margin-left: 10px;
       border-radius: 2px;
       cursor: pointer;
     }
   }
-  .right{
+  .right {
     margin-right: 1rem;
     color: #fff;
     display: flex;
     align-items: center;
-    .change{
+    .change {
       margin-right: 1rem;
     }
-    .icon{
+    .icon {
       margin-right: 0.5rem;
       width: 45px;
       height: 45px;
       overflow: hidden;
       border-radius: 22.5px;
-      img{
+      img {
         width: 45px;
         height: 45px;
         border-radius: 22.5px;
       }
     }
-    .userInfo{
+    .userInfo {
       display: flex;
       align-items: center;
       position: relative;
       height: 4rem;
       width: auto;
-      span{
+      span {
         width: auto;
         max-width: 6rem;
         height: 2rem;
@@ -1055,11 +1062,11 @@
         word-break: break-all;
         text-align: right;
       }
-      .fas{
+      .fas {
         margin-bottom: 6px;
         margin-left: 6px;
       }
-      .hoverBox{
+      .hoverBox {
         display: none;
         position: absolute;
         right: 0;
@@ -1069,67 +1076,65 @@
         z-index: 10;
         width: 7rem;
         border: solid 1px #ddd;
-        .hoverItem{
+        .hoverItem {
           height: 2.5rem;
           line-height: 2.5rem;
           font-size: 14px;
           cursor: pointer;
         }
-        .hoverItem:hover{
+        .hoverItem:hover {
           color: @blue;
         }
-        .hoverItem:nth-child(1){
+        .hoverItem:nth-child(1) {
           border-bottom: solid 1px #ddd;
         }
       }
     }
-    .userInfo:hover{
-      .hoverBox{
+    .userInfo:hover {
+      .hoverBox {
         display: block;
-
       }
     }
   }
 }
 
-
 //语义网属性
-.semanticType{
+.semanticType {
   display: flex;
   flex: 1;
   height: 100%;
   width: 100%;
   /*padding: 1rem;*/
-  .content{
+  .content {
     flex: 1;
     overflow: auto;
     position: relative;
     display: flex;
     flex-flow: column;
     justify-content: space-between;
-    .title{
+    .title {
       width: 100%;
       text-align: left;
     }
-    .inputItem{
+    .inputItem {
       width: 100%;
       text-align: left;
       margin-top: 1rem;
       padding-left: 10px;
       font-size: 0.8rem;
-      .smallBtn{
+      .smallBtn {
         font-size: 0.8rem;
         width: 2.5rem;
         margin-left: 0.5rem;
       }
-      .inputContent{
+      .inputContent {
         display: flex;
         align-items: center;
-        .addBtn{
+        .addBtn {
           display: flex;
           align-items: center;
           margin-left: 5px;
-          span{
+          span {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1140,49 +1145,50 @@
             border-radius: 2px;
             cursor: pointer;
           }
-          span:last-child{
+          span:last-child {
             margin-left: 1rem;
           }
-          .active,span:active{
-            border: solid 1px #2B86F6;
-            color: #2B86F6;
+          .active,
+          span:active {
+            border: solid 1px #2b86f6;
+            color: #2b86f6;
           }
         }
       }
-      p{
+      p {
         font-size: 0.8rem;
         margin-bottom: 8px;
       }
-      select{
+      select {
         height: 2rem;
         width: 10rem;
         outline: none;
-        background:rgba(250,250,250,1);
+        background: rgba(250, 250, 250, 1);
       }
-      select:focus{
-        border: solid 1px #2B86F6;
+      select:focus {
+        border: solid 1px #2b86f6;
       }
-      .inputTag{
+      .inputTag {
         outline: none;
         width: 50%;
         height: 2rem;
         border: solid 1px #ddd;
-        background:rgba(250,250,250,1);
+        background: rgba(250, 250, 250, 1);
         border-radius: 2px;
         padding: 0 8px;
       }
-      .inputTag:focus{
-        border: solid 1px #2B86F6;
+      .inputTag:focus {
+        border: solid 1px #2b86f6;
       }
-      .innerInput{
+      .innerInput {
         width: 50%;
       }
-      .chose{
+      .chose {
         margin-top: 8px;
         display: flex;
         flex-wrap: wrap;
         color: #666;
-        span{
+        span {
           padding: 0 5px;
           height: 1.5rem;
           line-height: 1.5rem;
@@ -1192,46 +1198,48 @@
           margin-right: 5px;
         }
       }
-      .chose:hover{
+      .chose:hover {
         color: #333;
       }
     }
-    .btnGroup{
+    .btnGroup {
       width: 100%;
       height: 3rem;
       min-height: 3rem;
-      background:rgba(236,241,247,1);
+      background: rgba(236, 241, 247, 1);
       display: flex;
       align-items: center;
       padding: 0 1rem;
       margin-top: 1rem;
-      span{
+      span {
         width: 5rem;
         font-size: 0.8rem;
         height: 2rem;
         line-height: 2rem;
         cursor: pointer;
       }
-      .submit{
-        background: #2B86F6;
+      .submit {
+        background: #2b86f6;
         color: #fff;
       }
-      .submit:active{
+      .submit:active {
         background: #00aaec;
       }
-      .cancel{
+      .cancel {
         margin-left: 1rem;
         border: solid 1px #ddd;
         background: #fff;
       }
-      .cancel:active{
+      .cancel:active {
         background: #ddd;
       }
     }
   }
-  .detailItem{
+  .detailItem {
     width: 220px;
-    .ctrl{
+    display: flex;
+    flex-flow: column;
+    .ctrl {
       min-height: 2.5rem;
       height: 2.5rem;
       line-height: 2.5rem;
@@ -1239,35 +1247,38 @@
       border-bottom: solid 1px #f6f6f6;
       background: #f6f6f6;
       justify-content: space-between;
-      span{
+      span {
         font-size: 12px;
         max-width: 40%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      .ctrlBtn{
+      .ctrlBtn {
         flex: 1;
         text-align: right;
         margin-right: 0.5rem;
-        i{
+        i {
           margin: 0 0.5rem;
           cursor: pointer;
         }
-        i:hover{
-          color: #2B86F6;
+        i:hover {
+          color: #2b86f6;
         }
       }
     }
     height: 100%;
     border: solid 1px #ddd;
     margin-left: -1px;
+    .list {
+      flex: 1;
+      overflow-y: auto;
+    }
   }
 }
 
-
 //相似问题编辑框
-.sameView{
+.sameView {
   width: 40rem;
   background: #fff;
   height: 30rem;
@@ -1276,7 +1287,7 @@
   align-self: center;
   border-radius: 2px;
   overflow: hidden;
-  .title{
+  .title {
     height: 3rem;
     min-height: 3rem;
     background: #f3f3f3;
@@ -1285,93 +1296,93 @@
     justify-content: space-between;
     padding: 0 1rem;
   }
-  .content{
+  .content {
     height: 27rem;
     flex: 1;
     padding: 1rem 2rem;
     display: flex;
     flex-flow: column;
     font-size: 0.9rem;
-    .topContent{
+    .topContent {
       height: 3rem;
       min-height: 3rem;
       align-items: center;
       justify-content: space-between;
       border-bottom: solid 1px #ddd;
-      p{
+      p {
         width: 50%;
         min-width: 50%;
         text-align: left;
         padding-left: 1rem;
         color: #000;
         font-weight: 600;
-        span{
+        span {
           color: #666;
           font-weight: 500;
         }
       }
     }
-    .midContent{
+    .midContent {
       flex: 1;
       overflow: auto;
-      .sameItem{
+      .sameItem {
         font-size: 12px;
         height: 3rem;
         border-bottom: solid 1px #ddd;
         align-items: center;
         width: 100%;
         justify-content: space-between;
-        p{
+        p {
           height: 1.5rem;
           line-height: 1.5rem;
           overflow: hidden;
           text-align: left;
           padding-left: 1rem;
         }
-        .ctrl{
+        .ctrl {
           width: 6rem;
           min-width: 6rem;
         }
-        .text{
+        .text {
           flex: 1;
         }
       }
-      .sameItem:hover{
-        background: #F2F6FA;
+      .sameItem:hover {
+        background: #f2f6fa;
       }
     }
   }
 }
 
 //标签页
-.tagContainBox{
+.tagContainBox {
   display: flex;
   flex-flow: column;
   background: #fff;
   border: solid 1px #ddd;
   padding: 0;
-  .tagItem{
+  .tagItem {
     height: 3rem;
     overflow: auto;
     background: #f5f5f5;
     display: flex;
     position: relative;
-    span{
+    span {
       line-height: 3rem;
       width: 7rem;
       text-align: center;
       border-right: solid 1px #ddd;
       cursor: pointer;
     }
-    span:hover{
+    span:hover {
       color: @blue;
     }
-    .active{
+    .active {
       background: #fff;
       margin-top: 1px;
       z-index: 5;
     }
-    .tagBottomLine{
+    .tagBottomLine {
       position: absolute;
       width: 100%;
       height: 1px;
@@ -1380,7 +1391,7 @@
       left: 0;
     }
   }
-  .tagContain{
+  .tagContain {
     padding: 1rem;
     text-align: left;
     color: #333;
@@ -1390,52 +1401,52 @@
 }
 
 //用户用户组增加栏目
-.addItemCommon{
+.addItemCommon {
   width: 100%;
   display: flex;
   align-items: flex-start;
   min-height: 2rem;
   margin-bottom: 10px;
   font-size: 0.9rem;
-  p{
+  p {
     width: 6rem;
     height: 2.5rem;
     line-height: 2.5rem;
     min-width: 6rem;
     text-align: right;
     padding-right: 1rem;
-    i{
-      color: #FF0000;
+    i {
+      color: #ff0000;
     }
   }
-  .itemContent{
+  .itemContent {
     flex: 1;
     display: flex;
     align-items: flex-start;
     flex-flow: column;
-    .warning{
+    .warning {
       font-size: 0.7rem;
-      color: #FF0000;
+      color: #ff0000;
       margin: 0 0.5rem;
     }
-    .tips{
+    .tips {
       font-size: 0.7rem;
       color: #999;
     }
   }
-  .time{
+  .time {
     flex-flow: row;
     align-items: center;
-    .el-radio-group{
+    .el-radio-group {
       display: flex;
-      .el-radio{
+      .el-radio {
         margin-left: 10px;
       }
     }
-    .el-input__inner{
+    .el-input__inner {
       width: 230px;
       margin-left: 10px;
-      .el-range-separator{
+      .el-range-separator {
         min-width: 25px;
       }
     }
@@ -1443,35 +1454,34 @@
 }
 
 //新建用户和用户组
-.newGroupAndUser{
-  .bottom{
+.newGroupAndUser {
+  .bottom {
     padding: 0 1rem;
-    .content{
+    .content {
       background: #fff;
       padding: 1rem;
       overflow: auto;
-      .msgPart{
+      .msgPart {
         width: 100%;
-        .intro{
+        .intro {
           text-align: left;
           margin-bottom: 1rem;
         }
-        .formItem{
+        .formItem {
           font-size: 14px;
           display: flex;
           align-items: center;
           margin-bottom: 10px;
           min-height: 40px;
-          .itemName{
+          .itemName {
             width: 10rem;
             text-align: right;
             margin-right: 10px;
           }
-          .itemContent{
+          .itemContent {
             width: 300px;
           }
         }
-
       }
     }
   }
