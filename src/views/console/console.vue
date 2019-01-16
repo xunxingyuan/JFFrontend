@@ -149,6 +149,16 @@ export default {
       this.$api.robot.getList().then(res => {
         if (res.status === 200) {
           this.$store.dispatch("setRobotList", res.data);
+          if (
+            !(
+              window.sessionStorage.getItem("robotId") ||
+              this.$route.query.robotId
+            )
+          ) {
+            if (res.data.length > 0) {
+              window.sessionStorage.setItem("robotId", res.data[0].robotId);
+            }
+          }
           this.$api.user.userGroup.getUserAuth().then(resp => {
             if (resp.status === 200) {
               let auth = {};
