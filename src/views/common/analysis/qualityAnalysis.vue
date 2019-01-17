@@ -1,3 +1,9 @@
+/*
+ * @Author: xunxingyuan 
+ * @Date: 2019-01-17 14:24:47 
+ * @Last Modified by:   xunxingyuan 
+ * @Last Modified time: 2019-01-17 14:24:47 
+ */
 <template>
   <div class="qualityAnalysis container">
     <section class="partBox" v-if="chosePart=== 1">
@@ -345,7 +351,8 @@
           </div>
           <div class="flex result">
             <i class="fas"></i>
-            <p>验证报告结果可以在
+            <p>
+              验证报告结果可以在
               <span @click="viewReportDetailNew">查看报告</span>查询
             </p>
           </div>
